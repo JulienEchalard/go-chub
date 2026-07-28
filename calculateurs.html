@@ -27,7 +27,7 @@
 <a class="back" href="index.html">← Retour à l’accueil</a>
 
 <section id="oms" class="panel">
-  <span class="badge">Version 4</span>
+  <span class="badge">Version 5</span>
   <h2 style="margin-top:10px">EPF et biométries OMS</h2>
 
   <div class="formgrid">
@@ -71,6 +71,7 @@
 
   <div class="buttonrow">
     <button class="button" onclick="calculateWHO()">Calculer</button>
+    <button id="copy-who-button" class="button secondary hidden" onclick="copyWHOResults()">📋 Copier</button>
     <button class="button secondary" onclick="resetWHO()">Effacer</button>
   </div>
 
@@ -88,32 +89,7 @@
   <span class="badge">Référence FMF</span>
   <h2 style="margin-top:10px">Dopplers fœtaux</h2>
 
-  <div class="formgrid">
-    <div class="field">
-      <label>Semaines d’aménorrhée</label>
-      <input id="doppler-weeks" type="number" min="20" max="42" value="32" oninput="calculateDopplerLive()">
-    </div>
-    <div class="field">
-      <label>Jours</label>
-      <input id="doppler-days" type="number" min="0" max="6" value="0" oninput="calculateDopplerLive()">
-    </div>
-    <div class="field">
-      <label>IP artère ombilicale</label>
-      <input id="ua-pi" type="number" min="0" step="0.01" placeholder="ex. 0,95" oninput="calculateDopplerLive()">
-    </div>
-    <div class="field">
-      <label>IP artère cérébrale moyenne</label>
-      <input id="mca-pi" type="number" min="0" step="0.01" placeholder="ex. 1,80" oninput="calculateDopplerLive()">
-    </div>
-  </div>
-
-  <div id="doppler-live-results" class="results hidden"></div>
-
-  <div class="notice validation">
-    <strong>CPR calculé en temps réel :</strong> IP ACM ÷ IP AO. Pour les z-scores, centiles et courbes de référence, le calculateur officiel FMF est intégré ci-dessous.
-  </div>
-
-  <div style="margin-top:16px;border:1px solid var(--line);border-radius:15px;overflow:hidden;background:white">
+  <div style="border:1px solid var(--line);border-radius:15px;overflow:hidden;background:white">
     <iframe
       title="Calculateur Doppler officiel FMF"
       src="https://archive.fetalmedicine.org/research/doppler"
@@ -128,7 +104,7 @@
   </div>
 
   <p class="source">
-    Le calculateur FMF fournit les z-scores et centiles de l’IP ombilical, de l’IP cérébral moyen et du rapport cérébroplacentaire selon le terme.
+    Calculateur officiel FMF : IP ombilical, IP cérébral moyen et rapport cérébroplacentaire selon le terme.
   </p>
 </section>
 
@@ -150,10 +126,11 @@
 </section>
 </main>
 
-<footer>GO-CHUB · V4</footer>
+<footer>GO-CHUB · V5</footer>
 
 <script>
 let WHO = null;
+let lastWHOText = '';
 fetch('assets/who-coefficients.json')
   .then(r => r.json())
   .then(d => WHO = d);
@@ -246,15 +223,65 @@ function calculateWHO(){
   const box=document.getElementById('who-results');
   box.innerHTML=html || '<div class="notice">Renseignez au moins une biométrie.</div>';
   box.classList.remove('hidden');
+
+  const copyButton=document.getElementById('copy-who-button');
+  const parts=[];
+  if(hc>0){
+    const r=percentileWHO('HC',ga,hc);
+    parts.push(`PC ${formatNum(hc)} mm (${r.label})`);
+  }
+  if(ac>0){
+    const r=percentileWHO('AC',ga,ac);
+    parts.push(`PA ${formatNum(ac)} mm (${r.label})`);
+  }
+  if(fl>0){
+    const r=percentileWHO('FL',ga,fl);
+    parts.push(`LF ${formatNum(fl)} mm (${r.label})`);
+  }
+  if(hc>0 && ac>0 && fl>0){
+    const efw=hadlockHCACFL(hc,ac,fl);
+    const r=percentileWHO('EFW',ga,efw);
+    parts.push(`EPF Hadlock ${Math.round(efw)} g (${r.label})`);
+  }
+  lastWHOText=parts.join(', ');
+  if(lastWHOText){
+    copyButton.classList.remove('hidden');
+  } else {
+    copyButton.classList.add('hidden');
+  }
 }
 
 function formatNum(v){
   return Number.isInteger(v) ? String(v) : v.toFixed(1).replace('.',',');
 }
 
+
+async function copyWHOResults(){
+  if(!lastWHOText) return;
+  const text='Biométries : '+lastWHOText+'.';
+  try{
+    await navigator.clipboard.writeText(text);
+  }catch(e){
+    const area=document.createElement('textarea');
+    area.value=text;
+    area.style.position='fixed';
+    area.style.opacity='0';
+    document.body.appendChild(area);
+    area.select();
+    document.execCommand('copy');
+    area.remove();
+  }
+  const button=document.getElementById('copy-who-button');
+  const original=button.textContent;
+  button.textContent='✓ Copié';
+  setTimeout(()=>button.textContent=original,1200);
+}
+
 function resetWHO(){
   ['hc','ac','fl','efw'].forEach(id=>document.getElementById(id).value='');
   document.getElementById('who-results').classList.add('hidden');
+  document.getElementById('copy-who-button').classList.add('hidden');
+  lastWHOText='';
 }
 
 
@@ -267,32 +294,6 @@ function scheduleWHO(){
     const fl=Number(document.getElementById('fl').value);
     if(hc>0 || ac>0 || fl>0) calculateWHO();
   },120);
-}
-
-function calculateDopplerLive(){
-  const ua=Number(document.getElementById('ua-pi').value);
-  const mca=Number(document.getElementById('mca-pi').value);
-  const box=document.getElementById('doppler-live-results');
-
-  if(!(ua>0) && !(mca>0)){
-    box.classList.add('hidden');
-    box.innerHTML='';
-    return;
-  }
-
-  let out='';
-  if(ua>0){
-    out += `<div class="result"><small>IP artère ombilicale</small><strong>${ua.toFixed(2).replace('.',',')}</strong></div>`;
-  }
-  if(mca>0){
-    out += `<div class="result"><small>IP artère cérébrale moyenne</small><strong>${mca.toFixed(2).replace('.',',')}</strong></div>`;
-  }
-  if(ua>0 && mca>0){
-    const cpr=mca/ua;
-    out += `<div class="result efw-highlight"><small>Rapport cérébroplacentaire</small><strong class="result-value">${cpr.toFixed(2).replace('.',',')}</strong></div>`;
-  }
-  box.innerHTML=out;
-  box.classList.remove('hidden');
 }
 
 function discordance(){

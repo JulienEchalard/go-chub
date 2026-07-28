@@ -1,4 +1,4 @@
-# GO-CHUB V4
+# GO-CHUB V5
 
 ## Mise à jour sur GitHub
 
@@ -35,3 +35,10 @@ Ne publiez aucune donnée de patiente.
 - Calcul automatique et instantané de l’EPF dès que PC, PA et LF sont complets.
 - Module Doppler avec saisie AO et ACM et calcul instantané du CPR.
 - Intégration du calculateur officiel FMF pour les z-scores, centiles et courbes Doppler.
+
+
+## Nouveautés V5
+- Le module Doppler reste dans la rubrique Calculateurs et affiche directement le calculateur officiel FMF.
+- Suppression du calcul parallèle AO/ACM/CPR devenu redondant.
+- Ajout d’un bouton « Copier » pour générer une phrase prête à coller dans un compte rendu.
+- Le rendu des cartes de biométrie et de l’EPF reste inchangé.
