@@ -1,4 +1,4 @@
-# GO-CHUB V2
+# GO-CHUB V3
 
 ## Mise à jour sur GitHub
 
@@ -21,3 +21,10 @@ La table EPF utilisée dans cette version est la référence globale, indépenda
 Placez le PDF dans `protocoles/obstetrique/` ou `protocoles/gynecologie/`, puis ajoutez un lien dans le fichier `index.html` du dossier concerné.
 
 Ne publiez aucune donnée de patiente.
+
+
+## Nouveautés V3
+- Calcul automatique de l’EPF à partir du PC, du PA et de la LF.
+- Formule Hadlock HC–PA–LF.
+- Percentiles calculés à partir des coefficients de régression quantile OMS.
+- Nouveau cache PWA pour éviter l’affichage persistant de l’ancienne version.
