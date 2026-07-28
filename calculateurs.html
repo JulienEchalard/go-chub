@@ -1,32 +1,55 @@
-<!doctype html><html lang="fr"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="theme-color" content="#123b5d"><link rel="stylesheet" href="assets/style.css"><title>Calculateurs · GO-CHUB</title></head><body>
-<header class="topbar"><div class="brand"><div class="logo">GO</div><div><h1>Calculateurs</h1><p>GO-CHUB</p></div></div></header>
+<!doctype html><html lang="fr"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><meta name="theme-color" content="#123b5d"><link rel="stylesheet" href="assets/style.css"><title>Calculateurs · GO-CHUB</title></head><body>
+<header class="topbar"><div class="topbar-inner"><a class="brand" href="index.html"><div class="brandmark">GO</div><div><h1>Calculateurs</h1><small>GO-CHUB</small></div></a></div></header>
 <main><a class="back" href="index.html">← Retour à l’accueil</a>
+<section id="oms" class="panel"><span class="badge">Références OMS 2017 corrigées</span><h2 style="margin-top:10px">EPF et biométries OMS</h2>
+<div class="formgrid">
+<div class="field"><label>Semaines d’aménorrhée</label><input id="weeks" type="number" min="14" max="40" value="32"></div>
+<div class="field"><label>Jours</label><input id="days" type="number" min="0" max="6" value="0"></div>
+<div class="field"><label>Sexe fœtal</label><select id="sex"><option value="unknown">Non renseigné</option><option value="female">Féminin</option><option value="male">Masculin</option></select></div>
+<div class="field"><label>EPF déjà calculée</label><div class="unit"><input id="efw" type="number" min="1" placeholder="ex. 1900"><span>g</span></div></div>
+<div class="field"><label>PC</label><div class="unit"><input id="hc" type="number" min="1" placeholder="ex. 295"><span>mm</span></div></div>
+<div class="field"><label>PA</label><div class="unit"><input id="ac" type="number" min="1" placeholder="ex. 280"><span>mm</span></div></div>
+<div class="field"><label>LF</label><div class="unit"><input id="fl" type="number" min="1" placeholder="ex. 62"><span>mm</span></div></div>
+</div>
+<div class="buttonrow"><button class="button" onclick="calculateWHO()">Calculer</button><button class="button secondary" onclick="resetWHO()">Effacer</button></div>
+<div id="who-results" class="results hidden"></div>
+<div class="notice"><strong>Précision :</strong> les percentiles sont calculés par interpolation des tables OMS publiées pour chaque semaine entre 14 et 40 SA. Les tables biométriques ne sont pas spécifiques du sexe. Pour l’EPF, cette version utilise la table OMS globale ; le choix du sexe est conservé dans l’interface en vue d’une intégration séparée des tables féminine et masculine.</div>
+<p class="source">Source : Kiserud et coll., <em>The World Health Organization Fetal Growth Charts</em>, PLOS Medicine 2017, et fichier Excel complémentaire corrigé. Un percentile interpolé reste une approximation numérique entre les centiles publiés.</p>
+</section>
 
-<section id="epf" class="panel"><h2>EPF OMS</h2><div class="warning-box"><strong>À valider avant usage clinique.</strong><br>La structure est prête, mais la formule d’EPF et les références OMS doivent être intégrées à partir d’une source officielle validée par le service.</div></section>
-
-<section id="doppler" class="panel"><h2>Doppler</h2><div class="warning-box"><strong>À valider avant usage clinique.</strong><br>Les percentiles dépendent du vaisseau, du terme et des courbes de référence choisies. Les tables officielles doivent être validées avant intégration.</div></section>
-
-<section id="discordance" class="panel"><h2>Discordance gémellaire</h2><div class="calc">
-<div class="calc-row"><label>Poids du plus grand fœtus (g)<input id="big" type="number" min="1" inputmode="decimal"></label><label>Poids du plus petit fœtus (g)<input id="small" type="number" min="1" inputmode="decimal"></label></div>
-<button class="button" onclick="discordance()">Calculer</button><div id="discordance-result" class="result-box">Renseignez les deux poids.</div>
-</div></section>
-
-<section id="terme" class="panel"><h2>Calcul du terme</h2><div class="calc">
-<label>Date de début de grossesse<input id="ddg" type="date"></label>
-<button class="button" onclick="terme()">Calculer</button><div id="terme-result" class="result-box">Renseignez la date de début de grossesse.</div>
-</div></section>
-</main><footer>GO-CHUB · Version 1.0</footer>
+<section id="doppler" class="panel"><h2>Doppler</h2><div class="notice">Le module Doppler sera ajouté après choix et validation des courbes de référence du service (AO, ACM, DV, CPR).</div></section>
+<section id="discordance" class="panel"><h2>Discordance gémellaire</h2><div class="grid grid2"><div class="field"><label>EPF la plus élevée</label><div class="unit"><input id="big" type="number"><span>g</span></div></div><div class="field"><label>EPF la plus faible</label><div class="unit"><input id="small" type="number"><span>g</span></div></div></div><div class="buttonrow"><button class="button" onclick="discordance()">Calculer</button></div><div id="discordance-result" class="notice">Renseignez les deux EPF.</div></section>
+<section id="terme" class="panel"><h2>Calcul du terme</h2><div class="field"><label>Date de début de grossesse</label><input id="ddg" type="date"></div><div class="buttonrow"><button class="button" onclick="terme()">Calculer</button></div><div id="terme-result" class="notice">Renseignez la DDG.</div></section>
+</main><footer>GO-CHUB · V2</footer>
 <script>
-function discordance(){
- const a=Number(document.getElementById('big').value),b=Number(document.getElementById('small').value),r=document.getElementById('discordance-result');
- if(!a||!b){r.textContent='Renseignez les deux poids.';return}
- const max=Math.max(a,b),min=Math.min(a,b),d=((max-min)/max)*100;
- r.innerHTML='<strong>Discordance : '+d.toFixed(1)+' %</strong><br><small>Formule : (poids le plus élevé − poids le plus faible) / poids le plus élevé × 100.</small>';
+let WHO=null; fetch('assets/who-growth.json').then(r=>r.json()).then(d=>WHO=d);
+
+function interp(a,b,t){return a+(b-a)*t}
+function curvesAt(metric,ga){
+ const w=Math.floor(ga), t=ga-w;
+ const d=WHO[metric], lo=d.values[String(w)], hi=d.values[String(Math.min(40,w+1))];
+ return lo.map((v,i)=>interp(v,hi[i],t));
 }
-function terme(){
- const v=document.getElementById('ddg').value,r=document.getElementById('terme-result');
- if(!v){r.textContent='Renseignez la date de début de grossesse.';return}
- const d=new Date(v+'T12:00:00'),terme=new Date(d);terme.setDate(terme.getDate()+287);
- r.innerHTML='<strong>Terme théorique (41 SA) : '+terme.toLocaleDateString('fr-FR')+'</strong><br><small>Date calculée à partir de la date de début de grossesse + 287 jours.</small>';
+function percentile(metric,ga,value){
+ const d=WHO[metric], ps=d.percentiles, vs=curvesAt(metric,ga);
+ if(value<=vs[0]) return {label:'< P2,5',p:2.5,status:'low'};
+ if(value>=vs[vs.length-1]) return {label:'> P97,5',p:97.5,status:'high'};
+ for(let i=0;i<vs.length-1;i++){
+  if(value>=vs[i]&&value<=vs[i+1]){
+   const p=interp(ps[i],ps[i+1],(value-vs[i])/(vs[i+1]-vs[i]));
+   return {label:'P'+(Math.round(p*10)/10).toString().replace('.',','),p,status:p<10?'low':p>90?'high':'normal'};
+  }
+ }
 }
+function resultCard(name,val,unit,r){return `<div class="result ${r.status}"><small>${name} · ${val} ${unit}</small><strong>${r.label}</strong></div>`}
+function calculateWHO(){
+ if(!WHO){alert('Les références sont encore en cours de chargement. Réessayez dans une seconde.');return}
+ const w=Number(document.getElementById('weeks').value),d=Number(document.getElementById('days').value),ga=w+d/7;
+ if(w<14||w>40||d<0||d>6){alert('Le terme doit être compris entre 14+0 et 40+6 SA.');return}
+ let html=''; [['hc','PC','mm'],['ac','PA','mm'],['fl','LF','mm'],['efw','EPF','g']].forEach(([id,label,unit])=>{const v=Number(document.getElementById(id).value);if(v>0)html+=resultCard(label,v,unit,percentile(id,ga,v))});
+ const box=document.getElementById('who-results');box.innerHTML=html||'<div class="notice">Renseignez au moins une mesure.</div>';box.classList.remove('hidden');
+}
+function resetWHO(){['hc','ac','fl','efw'].forEach(id=>document.getElementById(id).value='');document.getElementById('who-results').classList.add('hidden')}
+function discordance(){const a=Number(big.value),b=Number(small.value);if(!a||!b){document.getElementById('discordance-result').textContent='Renseignez les deux EPF.';return}const mx=Math.max(a,b),mn=Math.min(a,b),v=(mx-mn)/mx*100;document.getElementById('discordance-result').innerHTML='<strong>'+v.toFixed(1).replace('.',',')+' %</strong><br>(EPF la plus élevée − EPF la plus faible) / EPF la plus élevée × 100.'}
+function terme(){if(!ddg.value){document.getElementById('terme-result').textContent='Renseignez la DDG.';return}const d=new Date(ddg.value+'T12:00:00'),t=new Date(d);t.setDate(t.getDate()+287);document.getElementById('terme-result').innerHTML='<strong>41 SA : '+t.toLocaleDateString('fr-FR')+'</strong><br>Date de début de grossesse + 287 jours.'}
 </script></body></html>

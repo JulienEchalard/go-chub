@@ -1,35 +1,23 @@
-# GO-CHUB
+# GO-CHUB V2
 
-Site statique gratuit pour les protocoles et outils de gynécologie-obstétrique.
+## Mise à jour sur GitHub
 
-## Mise en ligne sur GitHub Pages
+Décompressez l’archive, puis téléversez tout son contenu dans le dépôt GitHub. Acceptez le remplacement des fichiers existants et validez les modifications.
 
-1. Dans le dépôt GitHub, clique sur **Ajouter un fichier** puis **Téléverser des fichiers**.
-2. Décompresse l’archive et dépose **le contenu du dossier**, pas le dossier lui-même.
-3. Valide avec **Commit changes**.
-4. Ouvre **Settings > Pages**.
-5. Dans **Build and deployment**, choisis **Deploy from a branch**.
-6. Sélectionne la branche **main** et le dossier **/(root)** puis **Save**.
+## Calculateur OMS
 
-Le site sera ensuite disponible à une adresse du type :
-`https://julienechalard.github.io/go-chub/`
+Le calculateur utilise les tables du fichier complémentaire de :
 
-## Ajouter un protocole PDF
+Kiserud T, et al. The World Health Organization Fetal Growth Charts. PLOS Medicine. 2017;14:e1002220.
 
-- Obstétrique : déposer le PDF dans `protocoles/obstetrique/`
-- Gynécologie : déposer le PDF dans `protocoles/gynecologie/`
+Les percentiles de PC, PA, LF et EPF sont obtenus par interpolation :
+- entre les semaines complètes pour les jours ;
+- entre les percentiles publiés pour la mesure.
 
-Puis modifier le fichier `index.html` du dossier concerné et ajouter un lien :
+La table EPF utilisée dans cette version est la référence globale, indépendamment du sexe. Le sélecteur de sexe est présent mais ne modifie pas encore le résultat.
 
-```html
-<a class="result" href="preeclampsie.pdf">
-  <strong>Prééclampsie</strong>
-  <small>Version juin 2026</small>
-</a>
-```
+## Ajouter un PDF
 
-Éviter les espaces et accents dans les noms des fichiers.
+Placez le PDF dans `protocoles/obstetrique/` ou `protocoles/gynecologie/`, puis ajoutez un lien dans le fichier `index.html` du dossier concerné.
 
-## Sécurité
-
-Ne jamais publier de données patientes, de coordonnées privées ou de documents non destinés à être publics.
+Ne publiez aucune donnée de patiente.
