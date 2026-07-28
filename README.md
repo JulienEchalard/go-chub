@@ -1,4 +1,4 @@
-# GO-CHUB V3
+# GO-CHUB V4
 
 ## Mise à jour sur GitHub
 
@@ -28,3 +28,10 @@ Ne publiez aucune donnée de patiente.
 - Formule Hadlock HC–PA–LF.
 - Percentiles calculés à partir des coefficients de régression quantile OMS.
 - Nouveau cache PWA pour éviter l’affichage persistant de l’ancienne version.
+
+
+## Nouveautés V4
+- Affichage automatique des percentiles biométriques pendant la saisie.
+- Calcul automatique et instantané de l’EPF dès que PC, PA et LF sont complets.
+- Module Doppler avec saisie AO et ACM et calcul instantané du CPR.
+- Intégration du calculateur officiel FMF pour les z-scores, centiles et courbes Doppler.

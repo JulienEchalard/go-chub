@@ -1,4 +1,4 @@
-const C='go-chub-v3';
+const C='go-chub-v4';
 const F=['./','./index.html','./calculateurs.html','./assets/style.css','./assets/app.js','./assets/who-coefficients.json'];
 self.addEventListener('install',e=>{self.skipWaiting();e.waitUntil(caches.open(C).then(c=>c.addAll(F)))});
 self.addEventListener('activate',e=>e.waitUntil(caches.keys().then(keys=>Promise.all(keys.filter(k=>k!==C).map(k=>caches.delete(k)))).then(()=>self.clients.claim())));
