@@ -1,0 +1,32 @@
+<!doctype html><html lang="fr"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="theme-color" content="#123b5d"><link rel="stylesheet" href="assets/style.css"><title>Calculateurs · GO-CHUB</title></head><body>
+<header class="topbar"><div class="brand"><div class="logo">GO</div><div><h1>Calculateurs</h1><p>GO-CHUB</p></div></div></header>
+<main><a class="back" href="index.html">← Retour à l’accueil</a>
+
+<section id="epf" class="panel"><h2>EPF OMS</h2><div class="warning-box"><strong>À valider avant usage clinique.</strong><br>La structure est prête, mais la formule d’EPF et les références OMS doivent être intégrées à partir d’une source officielle validée par le service.</div></section>
+
+<section id="doppler" class="panel"><h2>Doppler</h2><div class="warning-box"><strong>À valider avant usage clinique.</strong><br>Les percentiles dépendent du vaisseau, du terme et des courbes de référence choisies. Les tables officielles doivent être validées avant intégration.</div></section>
+
+<section id="discordance" class="panel"><h2>Discordance gémellaire</h2><div class="calc">
+<div class="calc-row"><label>Poids du plus grand fœtus (g)<input id="big" type="number" min="1" inputmode="decimal"></label><label>Poids du plus petit fœtus (g)<input id="small" type="number" min="1" inputmode="decimal"></label></div>
+<button class="button" onclick="discordance()">Calculer</button><div id="discordance-result" class="result-box">Renseignez les deux poids.</div>
+</div></section>
+
+<section id="terme" class="panel"><h2>Calcul du terme</h2><div class="calc">
+<label>Date de début de grossesse<input id="ddg" type="date"></label>
+<button class="button" onclick="terme()">Calculer</button><div id="terme-result" class="result-box">Renseignez la date de début de grossesse.</div>
+</div></section>
+</main><footer>GO-CHUB · Version 1.0</footer>
+<script>
+function discordance(){
+ const a=Number(document.getElementById('big').value),b=Number(document.getElementById('small').value),r=document.getElementById('discordance-result');
+ if(!a||!b){r.textContent='Renseignez les deux poids.';return}
+ const max=Math.max(a,b),min=Math.min(a,b),d=((max-min)/max)*100;
+ r.innerHTML='<strong>Discordance : '+d.toFixed(1)+' %</strong><br><small>Formule : (poids le plus élevé − poids le plus faible) / poids le plus élevé × 100.</small>';
+}
+function terme(){
+ const v=document.getElementById('ddg').value,r=document.getElementById('terme-result');
+ if(!v){r.textContent='Renseignez la date de début de grossesse.';return}
+ const d=new Date(v+'T12:00:00'),terme=new Date(d);terme.setDate(terme.getDate()+287);
+ r.innerHTML='<strong>Terme théorique (41 SA) : '+terme.toLocaleDateString('fr-FR')+'</strong><br><small>Date calculée à partir de la date de début de grossesse + 287 jours.</small>';
+}
+</script></body></html>

@@ -1,0 +1,111 @@
+<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#123b5d">
+  <meta name="description" content="Protocoles et outils de gynécologie-obstétrique">
+  <link rel="manifest" href="manifest.webmanifest">
+  <link rel="apple-touch-icon" href="assets/icon-192.png">
+  <link rel="stylesheet" href="assets/style.css">
+  <title>GO-CHUB</title>
+</head>
+<body>
+<header class="topbar">
+  <div class="brand">
+    <div class="logo">GO</div>
+    <div>
+      <h1>GO-CHUB</h1>
+      <p>Protocoles et outils de gynécologie-obstétrique</p>
+    </div>
+  </div>
+</header>
+
+<main>
+  <section class="hero">
+    <h2>Que recherchez-vous ?</h2>
+    <input id="search" type="search" placeholder="Rechercher un protocole ou un outil…" autocomplete="off">
+  </section>
+
+  <section id="search-results" class="panel hidden">
+    <h2>Résultats</h2>
+    <div id="results-list" class="list"></div>
+  </section>
+
+  <section class="grid home-grid">
+    <a class="card" href="#protocoles">
+      <span class="emoji">📄</span>
+      <h2>Protocoles</h2>
+      <p>PDF obstétriques et gynécologiques</p>
+    </a>
+    <a class="card" href="#calculateurs">
+      <span class="emoji">🧮</span>
+      <h2>Calculateurs</h2>
+      <p>EPF OMS, Doppler, discordance et terme</p>
+    </a>
+    <a class="card" href="#outils">
+      <span class="emoji">🌐</span>
+      <h2>Outils utiles</h2>
+      <p>CRAT et FMF</p>
+    </a>
+  </section>
+
+  <section id="protocoles" class="panel">
+    <h2>Protocoles</h2>
+    <div class="grid two">
+      <a class="mini-card" href="protocoles/obstetrique/index.html">
+        <strong>Obstétrique</strong>
+        <span>Accéder aux PDF</span>
+      </a>
+      <a class="mini-card" href="protocoles/gynecologie/index.html">
+        <strong>Gynécologie</strong>
+        <span>Accéder aux PDF</span>
+      </a>
+    </div>
+  </section>
+
+  <section id="calculateurs" class="panel">
+    <h2>Calculateurs</h2>
+    <div class="grid two">
+      <a class="mini-card" href="calculateurs.html#epf">
+        <strong>EPF OMS</strong>
+        <span>Structure prête — formule à valider</span>
+      </a>
+      <a class="mini-card" href="calculateurs.html#doppler">
+        <strong>Doppler</strong>
+        <span>Structure prête — courbes à valider</span>
+      </a>
+      <a class="mini-card" href="calculateurs.html#discordance">
+        <strong>Discordance gémellaire</strong>
+        <span>Calcul fonctionnel</span>
+      </a>
+      <a class="mini-card" href="calculateurs.html#terme">
+        <strong>Calcul du terme</strong>
+        <span>Calcul fonctionnel</span>
+      </a>
+    </div>
+  </section>
+
+  <section id="outils" class="panel">
+    <h2>Outils utiles</h2>
+    <div class="grid two">
+      <a class="mini-card external" href="https://www.lecrat.fr/" target="_blank" rel="noopener">
+        <strong>CRAT</strong>
+        <span>Médicaments, grossesse et allaitement</span>
+      </a>
+      <a class="mini-card external" href="https://fetalmedicine.org/" target="_blank" rel="noopener">
+        <strong>FMF</strong>
+        <span>Fetal Medicine Foundation</span>
+      </a>
+    </div>
+  </section>
+
+  <section class="notice">
+    <strong>Important :</strong> outil d’aide à l’application des protocoles locaux. Il ne remplace pas l’évaluation clinique ni l’appel au senior.
+  </section>
+</main>
+
+<footer>GO-CHUB · Version 1.0</footer>
+<script src="assets/app.js"></script>
+</body>
+</html>
