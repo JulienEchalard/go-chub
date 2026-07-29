@@ -1,4 +1,4 @@
-# GO-CHUB V5
+# GO-CHUB V6
 
 ## Mise à jour sur GitHub
 
@@ -42,3 +42,10 @@ Ne publiez aucune donnée de patiente.
 - Suppression du calcul parallèle AO/ACM/CPR devenu redondant.
 - Ajout d’un bouton « Copier » pour générer une phrase prête à coller dans un compte rendu.
 - Le rendu des cartes de biométrie et de l’EPF reste inchangé.
+
+
+## Nouveautés V6
+- Ajout du calculateur de clarté nucale selon la LCC via l’outil de référence Perinatology.
+- Ajout du calculateur Fenton 2025 officiel PediTools, utilisable avec le sexe, l’âge gestationnel, le poids, la taille et le PC.
+- Refonte du calculateur de terme : âge gestationnel à la date du jour et date de 41 SA à partir de la DDG.
+- Correction obstétricale : une DDG correspond à 2 SA ; le terme de 41 SA est obtenu par DDG + 273 jours.

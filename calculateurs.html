@@ -27,7 +27,7 @@
 <a class="back" href="index.html">← Retour à l’accueil</a>
 
 <section id="oms" class="panel">
-  <span class="badge">Version 5</span>
+  <span class="badge">Version 6</span>
   <h2 style="margin-top:10px">EPF et biométries OMS</h2>
 
   <div class="formgrid">
@@ -108,6 +108,48 @@
   </p>
 </section>
 
+<section id="cn" class="panel">
+  <span class="badge">Référence Perinatology</span>
+  <h2 style="margin-top:10px">Clarté nucale selon la LCC</h2>
+  <p>Calcul de référence de la clarté nucale en fonction de la longueur cranio-caudale.</p>
+
+  <div style="border:1px solid var(--line);border-radius:15px;overflow:hidden;background:white">
+    <iframe
+      title="Calculateur LCC et clarté nucale Perinatology"
+      src="https://perinatology.com/calculators/Crown%20Rump%20and%20Nuchal%20Translucency.htm"
+      style="width:100%;height:900px;border:0;background:white"
+      loading="lazy"
+      referrerpolicy="no-referrer-when-downgrade">
+    </iframe>
+  </div>
+
+  <div class="buttonrow">
+    <a class="button" href="https://perinatology.com/calculators/Crown%20Rump%20and%20Nuchal%20Translucency.htm" target="_blank" rel="noopener" style="text-decoration:none">Ouvrir le calculateur ↗</a>
+  </div>
+  <p class="source">Pour l’évaluation de la clarté nucale, utiliser une LCC comprise entre 45 et 84 mm et appliquer les règles de mesure habituelles.</p>
+</section>
+
+<section id="fenton" class="panel">
+  <span class="badge">Fenton 2025 · PediTools</span>
+  <h2 style="margin-top:10px">Percentiles néonataux Fenton</h2>
+  <p>Renseigner uniquement le sexe, l’âge gestationnel, puis le poids, la taille et/ou le périmètre crânien.</p>
+
+  <div style="border:1px solid var(--line);border-radius:15px;overflow:hidden;background:white">
+    <iframe
+      title="Calculateur Fenton 2025 PediTools"
+      src="https://peditools.org/fenton2025/"
+      style="width:100%;height:1050px;border:0;background:white"
+      loading="lazy"
+      referrerpolicy="no-referrer-when-downgrade">
+    </iframe>
+  </div>
+
+  <div class="buttonrow">
+    <a class="button" href="https://peditools.org/fenton2025/" target="_blank" rel="noopener" style="text-decoration:none">Ouvrir PediTools ↗</a>
+  </div>
+  <p class="source">Âge gestationnel au format PediTools : par exemple 30 3/7 pour 30 SA + 3 jours. Poids en grammes, taille et PC en centimètres.</p>
+</section>
+
 <section id="discordance" class="panel">
   <h2>Discordance gémellaire</h2>
   <div class="grid grid2">
@@ -120,13 +162,14 @@
 
 <section id="terme" class="panel">
   <h2>Calcul du terme</h2>
-  <div class="field"><label>Date de début de grossesse</label><input id="ddg" type="date"></div>
-  <div class="buttonrow"><button class="button" onclick="terme()">Calculer</button></div>
-  <div id="terme-result" class="notice">Renseignez la DDG.</div>
+  <div class="field"><label>Date de début de grossesse</label><input id="ddg" type="date" oninput="terme()"></div>
+  <div class="buttonrow"><button class="button" onclick="terme()">Calculer</button><button class="button secondary" onclick="resetTerme()">Effacer</button></div>
+  <div id="terme-result" class="notice">Renseignez la date de début de grossesse.</div>
+  <p class="source">La DDG correspond à la date estimée de conception : elle équivaut à 2 SA. Le terme de 41 SA correspond donc à DDG + 273 jours.</p>
 </section>
 </main>
 
-<footer>GO-CHUB · V5</footer>
+<footer>GO-CHUB · V6</footer>
 
 <script>
 let WHO = null;
@@ -311,16 +354,37 @@ function discordance(){
 
 function terme(){
   const input=document.getElementById('ddg');
+  const box=document.getElementById('terme-result');
   if(!input.value){
-    document.getElementById('terme-result').textContent='Renseignez la DDG.';
+    box.textContent='Renseignez la date de début de grossesse.';
     return;
   }
-  const d=new Date(input.value+'T12:00:00');
-  const t=new Date(d);
-  t.setDate(t.getDate()+287);
-  document.getElementById('terme-result').innerHTML=
-    '<strong>41 SA : '+t.toLocaleDateString('fr-FR')+'</strong><br>' +
-    'Date de début de grossesse + 287 jours.';
+
+  const ddg=new Date(input.value+'T12:00:00');
+  const today=new Date();
+  today.setHours(12,0,0,0);
+
+  const elapsed=Math.floor((today-ddg)/86400000);
+  const amenorrheaDays=elapsed+14;
+  const weeks=Math.floor(amenorrheaDays/7);
+  const days=((amenorrheaDays%7)+7)%7;
+
+  const term=new Date(ddg);
+  term.setDate(term.getDate()+273);
+
+  let current;
+  if(amenorrheaDays<0){
+    current='La DDG saisie est postérieure à la date du jour.';
+  }else{
+    current=`Terme aujourd’hui : <strong>${weeks} SA + ${days} jour${days>1?'s':''}</strong>`;
+  }
+
+  box.innerHTML=current+'<br>Terme à 41 SA : <strong>'+term.toLocaleDateString('fr-FR')+'</strong>';
+}
+
+function resetTerme(){
+  document.getElementById('ddg').value='';
+  document.getElementById('terme-result').textContent='Renseignez la date de début de grossesse.';
 }
 </script>
 </body>
