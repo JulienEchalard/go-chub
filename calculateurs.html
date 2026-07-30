@@ -169,7 +169,7 @@
 </section>
 </main>
 
-<footer>GO-CHUB · V6</footer>
+<footer>GO-CHUB · V7</footer>
 
 <script>
 let WHO = null;
@@ -185,11 +185,13 @@ function curveValue(row, ga){
 }
 
 function percentileWHO(metric, ga, value){
+  // Port-Royal convertit chaque valeur en entier avec parseInt avant le calcul du percentile.
+  value = Math.trunc(Number(value));
   const rows = WHO[metric];
   const pts = rows.map(r => ({q:r.q, value:curveValue(r,ga)}));
 
-  if(value < pts[0].value) return {label:'< P1', p:1, status:'low'};
-  if(value > pts[pts.length-1].value) return {label:'> P99', p:99, status:'high'};
+  if(value < pts[0].value) return {label:'< P2,5', p:2.5, status:'low'};
+  if(value > pts[pts.length-1].value) return {label:'> P97,5', p:97.5, status:'high'};
 
   for(let i=0;i<pts.length-1;i++){
     const a=pts[i], b=pts[i+1];

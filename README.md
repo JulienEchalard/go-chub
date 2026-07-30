@@ -1,4 +1,4 @@
-# GO-CHUB V6
+# GO-CHUB V7
 
 ## Mise à jour sur GitHub
 
@@ -44,8 +44,34 @@ Ne publiez aucune donnée de patiente.
 - Le rendu des cartes de biométrie et de l’EPF reste inchangé.
 
 
-## Nouveautés V6
+## Nouveautés V7
 - Ajout du calculateur de clarté nucale selon la LCC via l’outil de référence Perinatology.
 - Ajout du calculateur Fenton 2025 officiel PediTools, utilisable avec le sexe, l’âge gestationnel, le poids, la taille et le PC.
 - Refonte du calculateur de terme : âge gestationnel à la date du jour et date de 41 SA à partir de la DDG.
 - Correction obstétricale : une DDG correspond à 2 SA ; le terme de 41 SA est obtenu par DDG + 273 jours.
+
+
+## Correction V7 – calcul OMS
+
+La V7 reproduit l’algorithme observé dans le calculateur OMS de la Maternité Port-Royal :
+
+- courbes quantiles P2,5, P5, P10, P25, P50, P75, P90, P95 et P97,5 ;
+- valeur de chaque courbe : `exp(b0 + b1×AG + b2×AG² + b3×AG³ + b4×AG⁴)` ;
+- interpolation linéaire du percentile entre les deux courbes encadrant la mesure ;
+- affichage `< P2,5` ou `> P97,5` hors des bornes ;
+- formule d’Hadlock 3 inchangée pour l’EPF.
+
+Les coefficients PC, PA, LF et EPF ont été alignés sur ceux embarqués par Port-Royal.
+
+
+## Correction V7 – calcul OMS
+
+La V7 reproduit l’algorithme observé dans le calculateur OMS de la Maternité Port-Royal :
+
+- courbes quantiles P2,5, P5, P10, P25, P50, P75, P90, P95 et P97,5 ;
+- valeur de chaque courbe : `exp(b0 + b1×AG + b2×AG² + b3×AG³ + b4×AG⁴)` ;
+- interpolation linéaire du percentile entre les deux courbes encadrant la mesure ;
+- affichage `< P2,5` ou `> P97,5` hors des bornes ;
+- formule d’Hadlock 3 inchangée pour l’EPF.
+
+Les coefficients PC, PA, LF et EPF ont été alignés sur ceux embarqués par Port-Royal.
