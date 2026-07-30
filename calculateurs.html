@@ -27,7 +27,7 @@
 <a class="back" href="index.html">← Retour à l’accueil</a>
 
 <section id="oms" class="panel">
-  <span class="badge">Version 6</span>
+  <span class="badge">Version 7.2</span>
   <h2 style="margin-top:10px">EPF et biométries OMS</h2>
 
   <div class="formgrid">
@@ -169,14 +169,13 @@
 </section>
 </main>
 
-<footer>GO-CHUB · V7.1</footer>
+<footer>GO-CHUB · V7.3</footer>
 
 <script>
-let WHO = null;
+// Références OMS intégrées directement dans la page pour éviter tout échec de chargement
+// ou conflit de cache du fichier JSON sur GitHub Pages/PWA.
+const WHO = {"EFW":[{"q":0.025,"b":[-0.23051839,0.40051112,-0.00617993,3.166e-05]},{"q":0.05,"b":[-0.1620571,0.39396537,-0.00579733,2.553e-05]},{"q":0.1,"b":[-0.04558876,0.38931405,-0.00574528,2.656e-05]},{"q":0.25,"b":[-0.01225877,0.39383640000000003,-0.00592305,2.886e-05]},{"q":0.5,"b":[0.15731009,0.38306794,-0.00554047,2.466e-05]},{"q":0.75,"b":[0.29329739,0.37609623,-0.00529255,2.184e-05]},{"q":0.9,"b":[0.35314223,0.37648687,-0.00528743,2.148e-05]},{"q":0.95,"b":[0.28502506,0.39062147,-0.00582929,2.791e-05]},{"q":0.975,"b":[0.40817059,0.38106821,-0.00550914,2.467e-05]}],"AC":[{"q":0.025,"b":[1.19202779,0.31475668,-0.00801581,7.514e-05]},{"q":0.05,"b":[1.09869954,0.33008000000000004,-0.00862096,8.254e-05]},{"q":0.1,"b":[1.24418122,0.3163154,-0.00814093,7.725e-05]},{"q":0.25,"b":[1.44520879,0.29943379,-0.00759672,7.167e-05]},{"q":0.5,"b":[1.58552931,0.28993678,-0.00732652,6.926e-05]},{"q":0.75,"b":[1.71452507,0.28136707,-0.00708196,6.709e-05]},{"q":0.9,"b":[1.78078382,0.27927889,-0.00706438,6.751e-05]},{"q":0.95,"b":[1.83213806,0.27710695,-0.00703389,6.761e-05]},{"q":0.975,"b":[2.03674473,0.25713846,-0.00634919,6.005e-05]}],"FL":[{"q":0.025,"b":[-7.27187178,1.28298929,-0.05806019,0.00121314,-9.6e-06]},{"q":0.05,"b":[-7.07052933,1.26780053,-0.05775563,0.00121608,-9.699999999999999e-06]},{"q":0.1,"b":[-6.69175407,1.22500911,-0.05592062,0.0011832000000000001,-9.5e-06]},{"q":0.25,"b":[-6.07953119,1.15245171,-0.05255107,0.00111419,-8.98e-06]},{"q":0.5,"b":[-5.54922621,1.0955999,-0.05013109,0.00106781,-8.64e-06]},{"q":0.75,"b":[-4.68666987,0.97811179,-0.04393191,0.00092347,-7.39e-06]},{"q":0.9,"b":[-4.31219597,0.94038705,-0.04247099,0.00089978,-7.26e-06]},{"q":0.95,"b":[-4.12398208,0.92034421,-0.0415729,0.00088106,-7.11e-06]},{"q":0.975,"b":[-3.64483931,0.85702813,-0.03840057,0.00081206,-6.56e-06]}],"HC":[{"q":0.025,"b":[1.59317517,0.29459801,-0.00738604,6.57e-05]},{"q":0.05,"b":[1.74883946,0.27840528,-0.00677991,5.836e-05]},{"q":0.1,"b":[1.83059537,0.27244251,-0.00659547,5.6399999999999995e-05]},{"q":0.25,"b":[1.94181945,0.26584757,-0.00644545,5.545e-05]},{"q":0.5,"b":[2.09924879,0.25337366,-0.00605648,5.143e-05]},{"q":0.75,"b":[2.20777452,0.24521232,-0.00578558,4.84e-05]},{"q":0.9,"b":[2.31777,0.23665151,-0.00550781,4.54e-05]},{"q":0.95,"b":[2.39550106,0.22958667,-0.00525318,4.237e-05]},{"q":0.975,"b":[2.5007407,0.22006785,-0.00493623,3.891e-05]}]};
 let lastWHOText = '';
-fetch('assets/who-coefficients.json')
-  .then(r => r.json())
-  .then(d => WHO = d);
 
 function curveValue(row, ga){
   // Les équations Port-Royal n'ont pas toutes le même degré :
@@ -190,8 +189,15 @@ function curveValue(row, ga){
 function percentileWHO(metric, ga, value){
   // Port-Royal convertit chaque valeur en entier avec parseInt avant le calcul du percentile.
   value = Math.trunc(Number(value));
-  const rows = WHO[metric];
-  const pts = rows.map(r => ({q:r.q, value:curveValue(r,ga)}));
+  const rows = WHO && WHO[metric];
+  if(!Array.isArray(rows) || !rows.length || !Number.isFinite(value)){
+    return {label:'Erreur de calcul',p:null,status:'low'};
+  }
+  const pts = rows
+    .map(r => ({q:Number(r.q), value:curveValue(r,ga)}))
+    .filter(r => Number.isFinite(r.q) && Number.isFinite(r.value))
+    .sort((a,b) => a.q-b.q);
+  if(pts.length < 2) return {label:'Erreur de calcul',p:null,status:'low'};
 
   if(value < pts[0].value) return {label:'< P2,5', p:2.5, status:'low'};
   if(value > pts[pts.length-1].value) return {label:'> P97,5', p:97.5, status:'high'};
@@ -230,11 +236,6 @@ function resultCard(name,val,unit,r,extra=''){
 }
 
 function calculateWHO(){
-  if(!WHO){
-    alert('Les références OMS sont en cours de chargement. Réessayez dans une seconde.');
-    return;
-  }
-
   const w=Number(document.getElementById('weeks').value);
   const d=Number(document.getElementById('days').value);
   const ga=w+d/7;

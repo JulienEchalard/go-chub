@@ -79,3 +79,7 @@ Les coefficients PC, PA, LF et EPF ont été alignés sur ceux embarqués par Po
 
 ## Correctif V7.1
 Correction de l’évaluation polynomiale : PC, PA et EPF utilisent quatre coefficients, tandis que la LF en utilise cinq. La V7 supposait à tort un cinquième coefficient pour toutes les biométries, produisant `NaN` pour PC, PA et EPF.
+
+
+## Correctif V7.3
+Les coefficients OMS sont désormais intégrés directement dans `calculateurs.html`. Cela supprime la dépendance au chargement asynchrone de `assets/who-coefficients.json`, qui pouvait laisser PC, PA et EPF sans résultat selon le cache/PWA. Cache renommé `go-chub-v7-2`.
