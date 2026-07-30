@@ -75,3 +75,7 @@ La V7 reproduit l’algorithme observé dans le calculateur OMS de la Maternité
 - formule d’Hadlock 3 inchangée pour l’EPF.
 
 Les coefficients PC, PA, LF et EPF ont été alignés sur ceux embarqués par Port-Royal.
+
+
+## Correctif V7.1
+Correction de l’évaluation polynomiale : PC, PA et EPF utilisent quatre coefficients, tandis que la LF en utilise cinq. La V7 supposait à tort un cinquième coefficient pour toutes les biométries, produisant `NaN` pour PC, PA et EPF.

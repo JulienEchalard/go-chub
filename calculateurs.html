@@ -169,7 +169,7 @@
 </section>
 </main>
 
-<footer>GO-CHUB · V7</footer>
+<footer>GO-CHUB · V7.1</footer>
 
 <script>
 let WHO = null;
@@ -179,8 +179,11 @@ fetch('assets/who-coefficients.json')
   .then(d => WHO = d);
 
 function curveValue(row, ga){
-  const b = row.b;
-  const logValue = b[0] + b[1]*ga + b[2]*ga**2 + b[3]*ga**3 + b[4]*ga**4;
+  // Les équations Port-Royal n'ont pas toutes le même degré :
+  // PC, PA et EPF utilisent 4 coefficients ; la LF en utilise 5.
+  // On évalue donc le polynôme selon le nombre réel de coefficients.
+  const logValue = row.b.reduce((sum, coefficient, degree) =>
+    sum + coefficient * ga ** degree, 0);
   return Math.exp(logValue);
 }
 
