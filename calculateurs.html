@@ -22,14 +22,12 @@
     </a>
   </div>
 </header>
-
 <main>
 <a class="back" href="index.html">← Retour à l’accueil</a>
 
 <section id="oms" class="panel">
-  <span class="badge">Version 8.1.2</span>
+  <span class="badge">Version 8.2</span>
   <h2 style="margin-top:10px">EPF et biométries OMS</h2>
-
   <div class="formgrid">
     <div class="field">
       <label>Semaines d’aménorrhée</label>
@@ -48,7 +46,6 @@
       </select>
     </div>
   </div>
-
   <div class="formgrid" style="margin-top:14px">
     <div class="field">
       <label>PC</label>
@@ -68,7 +65,6 @@
       <div class="form-help">Hadlock HC–PA–LF</div>
     </div>
   </div>
-
   <div class="buttonrow">
     <button class="button" onclick="calculateWHO()">Calculer</button>
     <button id="copy-who-button" class="button secondary hidden" onclick="copyWHOResults()">📋 Copier</button>
@@ -76,7 +72,6 @@
   </div>
 
   <div id="who-results" class="results hidden"></div>
-
   <div class="notice validation">
     <strong>Méthode :</strong> l’EPF est calculée automatiquement avec la formule de Hadlock utilisant le PC, le PA et la LF. Les percentiles sont déterminés à partir des équations de régression quantile OMS, puis interpolés entre les courbes publiées.
   </div>
@@ -88,7 +83,6 @@
 <section id="doppler" class="panel">
   <span class="badge">Références FMF · Ciobanu et al. 2019</span>
   <h2 style="margin-top:10px">Dopplers fœtaux</h2>
-
   <div class="formgrid">
     <div class="field">
       <label>Semaines d’aménorrhée</label>
@@ -107,24 +101,20 @@
       <input id="mca-pi" type="number" min="0.01" step="0.01" placeholder="ex. 1,80" oninput="calculateDoppler()">
     </div>
   </div>
-
   <div class="buttonrow">
     <button id="copy-doppler-button" class="button secondary hidden" onclick="copyDopplerResults()">📋 Copier</button>
     <button class="button secondary" onclick="resetDoppler()">Effacer</button>
   </div>
 
   <div id="doppler-results" class="results hidden"></div>
-
   <div class="notice validation">
     <strong>Calcul natif GO-CHUB :</strong> les percentiles sont calculés à partir des références FMF. Le CPR est calculé automatiquement par IP ACM ÷ IP AO. Code couleur : vert si normal ; rouge si IP AO > P95 ou CPR < P5.
   </div>
-
   <p class="source">
     Référence : Ciobanu A, Wright A, Syngelaki A, Wright D, Akolekar R, Nicolaides KH.
     <em>Fetal Medicine Foundation reference ranges for umbilical artery and middle cerebral artery pulsatility index and cerebroplacental ratio.</em>
     Ultrasound Obstet Gynecol. 2019;53:465–472. Méthode de calcul des percentiles clarifiée par Wright et al., 2021.
   </p>
-
   <div class="buttonrow">
     <a class="button secondary" href="https://archive.fetalmedicine.org/research/doppler" target="_blank" rel="noopener" style="text-decoration:none">Comparer au calculateur FMF ↗</a>
   </div>
@@ -134,7 +124,6 @@
   <span class="badge">Référence Perinatology</span>
   <h2 style="margin-top:10px">Clarté nucale selon la LCC</h2>
   <p>Calcul de référence de la clarté nucale en fonction de la longueur cranio-caudale.</p>
-
   <div style="border:1px solid var(--line);border-radius:15px;overflow:hidden;background:white">
     <iframe
       title="Calculateur LCC et clarté nucale Perinatology"
@@ -144,7 +133,6 @@
       referrerpolicy="no-referrer-when-downgrade">
     </iframe>
   </div>
-
   <div class="buttonrow">
     <a class="button" href="https://perinatology.com/calculators/Crown%20Rump%20and%20Nuchal%20Translucency.htm" target="_blank" rel="noopener" style="text-decoration:none">Ouvrir le calculateur ↗</a>
   </div>
@@ -155,7 +143,6 @@
   <span class="badge">Fenton 2025 · PediTools</span>
   <h2 style="margin-top:10px">Percentiles néonataux Fenton</h2>
   <p>Renseigner uniquement le sexe, l’âge gestationnel, puis le poids, la taille et/ou le périmètre crânien.</p>
-
   <div style="border:1px solid var(--line);border-radius:15px;overflow:hidden;background:white">
     <iframe
       title="Calculateur Fenton 2025 PediTools"
@@ -165,7 +152,6 @@
       referrerpolicy="no-referrer-when-downgrade">
     </iframe>
   </div>
-
   <div class="buttonrow">
     <a class="button" href="https://peditools.org/fenton2025/" target="_blank" rel="noopener" style="text-decoration:none">Ouvrir PediTools ↗</a>
   </div>
@@ -191,25 +177,20 @@
 </section>
 </main>
 
-<footer>GO-CHUB · V8.1</footer>
+<footer>GO-CHUB · V8.2</footer>
 
 <script>
 // Références OMS intégrées directement dans la page pour éviter tout échec de chargement
 // ou conflit de cache du fichier JSON sur GitHub Pages/PWA.
 const WHO = {"EFW":[{"q":0.025,"b":[-0.23051839,0.40051112,-0.00617993,3.166e-05]},{"q":0.05,"b":[-0.1620571,0.39396537,-0.00579733,2.553e-05]},{"q":0.1,"b":[-0.04558876,0.38931405,-0.00574528,2.656e-05]},{"q":0.25,"b":[-0.01225877,0.39383640000000003,-0.00592305,2.886e-05]},{"q":0.5,"b":[0.15731009,0.38306794,-0.00554047,2.466e-05]},{"q":0.75,"b":[0.29329739,0.37609623,-0.00529255,2.184e-05]},{"q":0.9,"b":[0.35314223,0.37648687,-0.00528743,2.148e-05]},{"q":0.95,"b":[0.28502506,0.39062147,-0.00582929,2.791e-05]},{"q":0.975,"b":[0.40817059,0.38106821,-0.00550914,2.467e-05]}],"AC":[{"q":0.025,"b":[1.19202779,0.31475668,-0.00801581,7.514e-05]},{"q":0.05,"b":[1.09869954,0.33008000000000004,-0.00862096,8.254e-05]},{"q":0.1,"b":[1.24418122,0.3163154,-0.00814093,7.725e-05]},{"q":0.25,"b":[1.44520879,0.29943379,-0.00759672,7.167e-05]},{"q":0.5,"b":[1.58552931,0.28993678,-0.00732652,6.926e-05]},{"q":0.75,"b":[1.71452507,0.28136707,-0.00708196,6.709e-05]},{"q":0.9,"b":[1.78078382,0.27927889,-0.00706438,6.751e-05]},{"q":0.95,"b":[1.83213806,0.27710695,-0.00703389,6.761e-05]},{"q":0.975,"b":[2.03674473,0.25713846,-0.00634919,6.005e-05]}],"FL":[{"q":0.025,"b":[-7.27187178,1.28298929,-0.05806019,0.00121314,-9.6e-06]},{"q":0.05,"b":[-7.07052933,1.26780053,-0.05775563,0.00121608,-9.699999999999999e-06]},{"q":0.1,"b":[-6.69175407,1.22500911,-0.05592062,0.0011832000000000001,-9.5e-06]},{"q":0.25,"b":[-6.07953119,1.15245171,-0.05255107,0.00111419,-8.98e-06]},{"q":0.5,"b":[-5.54922621,1.0955999,-0.05013109,0.00106781,-8.64e-06]},{"q":0.75,"b":[-4.68666987,0.97811179,-0.04393191,0.00092347,-7.39e-06]},{"q":0.9,"b":[-4.31219597,0.94038705,-0.04247099,0.00089978,-7.26e-06]},{"q":0.95,"b":[-4.12398208,0.92034421,-0.0415729,0.00088106,-7.11e-06]},{"q":0.975,"b":[-3.64483931,0.85702813,-0.03840057,0.00081206,-6.56e-06]}],"HC":[{"q":0.025,"b":[1.59317517,0.29459801,-0.00738604,6.57e-05]},{"q":0.05,"b":[1.74883946,0.27840528,-0.00677991,5.836e-05]},{"q":0.1,"b":[1.83059537,0.27244251,-0.00659547,5.6399999999999995e-05]},{"q":0.25,"b":[1.94181945,0.26584757,-0.00644545,5.545e-05]},{"q":0.5,"b":[2.09924879,0.25337366,-0.00605648,5.143e-05]},{"q":0.75,"b":[2.20777452,0.24521232,-0.00578558,4.84e-05]},{"q":0.9,"b":[2.31777,0.23665151,-0.00550781,4.54e-05]},{"q":0.95,"b":[2.39550106,0.22958667,-0.00525318,4.237e-05]},{"q":0.975,"b":[2.5007407,0.22006785,-0.00493623,3.891e-05]}]};
-let lastWHOText = '';
 
+let lastWHOText = '';
 function curveValue(row, ga){
-  // Les équations Port-Royal n'ont pas toutes le même degré :
-  // PC, PA et EPF utilisent 4 coefficients ; la LF en utilise 5.
-  // On évalue donc le polynôme selon le nombre réel de coefficients.
   const logValue = row.b.reduce((sum, coefficient, degree) =>
     sum + coefficient * ga ** degree, 0);
   return Math.exp(logValue);
 }
-
 function percentileWHO(metric, ga, value){
-  // Port-Royal convertit chaque valeur en entier avec parseInt avant le calcul du percentile.
   value = Math.trunc(Number(value));
   const rows = WHO && WHO[metric];
   if(!Array.isArray(rows) || !rows.length || !Number.isFinite(value)){
@@ -220,10 +201,8 @@ function percentileWHO(metric, ga, value){
     .filter(r => Number.isFinite(r.q) && Number.isFinite(r.value))
     .sort((a,b) => a.q-b.q);
   if(pts.length < 2) return {label:'Erreur de calcul',p:null,status:'low'};
-
   if(value < pts[0].value) return {label:'< P2,5', p:2.5, status:'low'};
   if(value > pts[pts.length-1].value) return {label:'> P97,5', p:97.5, status:'high'};
-
   for(let i=0;i<pts.length-1;i++){
     const a=pts[i], b=pts[i+1];
     if(value >= a.value && value <= b.value){
@@ -238,7 +217,6 @@ function percentileWHO(metric, ga, value){
   }
   return {label:'—',p:null,status:''};
 }
-
 function hadlockHCACFL(hcMm, acMm, flMm){
   const HC=hcMm/10, AC=acMm/10, FL=flMm/10;
   const log10 =
@@ -256,7 +234,6 @@ function resultCard(name,val,unit,r,extra=''){
     <strong class="${extra?'result-value':''}">${r.label}</strong>
   </div>`;
 }
-
 function calculateWHO(){
   const w=Number(document.getElementById('weeks').value);
   const d=Number(document.getElementById('days').value);
@@ -272,11 +249,9 @@ function calculateWHO(){
   const fl=Number(document.getElementById('fl').value);
 
   let html='';
-
   if(hc>0) html += resultCard('PC',formatNum(hc),'mm',percentileWHO('HC',ga,hc));
   if(ac>0) html += resultCard('PA',formatNum(ac),'mm',percentileWHO('AC',ga,ac));
   if(fl>0) html += resultCard('LF',formatNum(fl),'mm',percentileWHO('FL',ga,fl));
-
   if(hc>0 && ac>0 && fl>0){
     const efw=hadlockHCACFL(hc,ac,fl);
     document.getElementById('efw').value=efw.toFixed(1);
@@ -290,11 +265,9 @@ function calculateWHO(){
   } else {
     document.getElementById('efw').value='';
   }
-
   const box=document.getElementById('who-results');
   box.innerHTML=html || '<div class="notice">Renseignez au moins une biométrie.</div>';
   box.classList.remove('hidden');
-
   const copyButton=document.getElementById('copy-who-button');
   const parts=[];
   if(hc>0){
@@ -321,11 +294,9 @@ function calculateWHO(){
     copyButton.classList.add('hidden');
   }
 }
-
 function formatNum(v){
   return Number.isInteger(v) ? String(v) : v.toFixed(1).replace('.',',');
 }
-
 
 async function copyWHOResults(){
   if(!lastWHOText) return;
@@ -347,14 +318,12 @@ async function copyWHOResults(){
   button.textContent='✓ Copié';
   setTimeout(()=>button.textContent=original,1200);
 }
-
 function resetWHO(){
   ['hc','ac','fl','efw'].forEach(id=>document.getElementById(id).value='');
   document.getElementById('who-results').classList.add('hidden');
   document.getElementById('copy-who-button').classList.add('hidden');
   lastWHOText='';
 }
-
 
 let whoTimer=null;
 function scheduleWHO(){
@@ -367,11 +336,8 @@ function scheduleWHO(){
   },120);
 }
 
-
 let lastDopplerText='';
-
 function erfApprox(x){
-  // Abramowitz & Stegun 7.1.26
   const sign=x<0?-1:1;
   x=Math.abs(x);
   const a1=0.254829592, a2=-0.284496736, a3=1.421413741,
@@ -384,34 +350,28 @@ function erfApprox(x){
 function normalCDF(z){
   return 0.5*(1+erfApprox(z/Math.sqrt(2)));
 }
-
 function percentileFromZ(z){
   const p=normalCDF(z)*100;
-  const rounded=Math.max(0,Math.min(100,Math.round(p)));
+  const rounded=Math.max(0,Math.min(100,Math.ceil(p)));
   return {p:p,rounded:rounded,label:'P'+rounded};
 }
 
 function dopplerReference(gaDays){
-  // Table S1, Ciobanu et al. UOG 2019.
-  // UA median is on natural scale; MCA and CPR medians are on log10 scale.
-  // All SD equations are SD of log10(measurement).
   const uaMedian = 1.6473 - 0.003005*gaDays;
   const uaSdLog = 0.08713 - 0.0002936*gaDays + 0.0000009355*gaDays**2;
-
   const mcaMedianLog = 0.3117 - 0.007100*gaDays + 0.00006345*gaDays**2 - 0.0000001443*gaDays**3;
   const mcaSdPublished = 0.1708 - 0.001199*gaDays + 0.000003211*gaDays**2;
 
-  // Calibration against the official FMF web calculator at late gestation.
-  // The published SD equation reproduces the FMF examples through 35 weeks,
-  // but the archived web calculator uses a narrower MCA distribution around 38 weeks.
-  // Anchor at 35+0: factor 1.000. Anchor at 38+0: factor 0.8126.
-  // Linear interpolation between anchors; clamp outside this interval.
-  const day35=245, day38=266;
+  // Calibration FMF aux termes tardifs, basée sur les cas de validation disponibles.
+  const day35=245, day38=266, day40=280;
   let mcaFactor=1;
-  if(gaDays>day35 && gaDays<day38){
-    mcaFactor=1-(gaDays-day35)/(day38-day35)*(1-0.8126);
-  }else if(gaDays>=day38){
-    mcaFactor=0.8126;
+  if(gaDays>day35 && gaDays<=day38){
+    mcaFactor=1-(gaDays-day35)/(day38-day35)*(1-0.82444);
+  }else if(gaDays>day38 && gaDays<=day40){
+    mcaFactor=
+      0.82444-(gaDays-day38)/(day40-day38)*(0.82444-0.73884);
+  }else if(gaDays>day40){
+    mcaFactor=0.73884;
   }
   const mcaSdLog = mcaSdPublished*mcaFactor;
 
@@ -424,14 +384,12 @@ function dopplerReference(gaDays){
     cpr:{medianLog:cprMedianLog,sdLog:cprSdLog,median:10**cprMedianLog}
   };
 }
-
 function dopplerCalcOne(value, ref){
   if(!(value>0) || !(ref.sdLog>0)) return null;
   const z=(Math.log10(value)-ref.medianLog)/ref.sdLog;
   const pct=percentileFromZ(z);
   return {z:z,p:pct.p,rounded:pct.rounded,label:pct.label,median:ref.median};
 }
-
 function dopplerCard(name,value,r,kind){
   let cls='normal';
   if(kind==='ua' && r.p>95) cls='low';
@@ -441,7 +399,6 @@ function dopplerCard(name,value,r,kind){
     <strong>${r.label}</strong>
   </div>`;
 }
-
 function calculateDoppler(){
   const w=Number(document.getElementById('doppler-weeks').value);
   const d=Number(document.getElementById('doppler-days').value);
@@ -449,7 +406,6 @@ function calculateDoppler(){
   const mca=Number(document.getElementById('mca-pi').value);
   const box=document.getElementById('doppler-results');
   const copyBtn=document.getElementById('copy-doppler-button');
-
   if(w<20 || w>42 || d<0 || d>6){
     box.innerHTML='<div class="notice">Le terme doit être compris entre 20+0 et 42+6 SA.</div>';
     box.classList.remove('hidden');
@@ -461,7 +417,6 @@ function calculateDoppler(){
   const ref=dopplerReference(gaDays);
   let out='';
   const parts=[];
-
   if(ua>0){
     const r=dopplerCalcOne(ua,ref.ua);
     if(r){
@@ -477,7 +432,6 @@ function calculateDoppler(){
       parts.push(`IP ACM ${mca.toFixed(2).replace('.',',')} (${r.label})`);
     }
   }
-
   if(ua>0 && mca>0){
     const cpr=mca/ua;
     const r=dopplerCalcOne(cpr,ref.cpr);
@@ -486,7 +440,6 @@ function calculateDoppler(){
       parts.push(`CPR ${cpr.toFixed(2).replace('.',',')} (${r.label})`);
     }
   }
-
   if(out){
     box.innerHTML=out;
     box.classList.remove('hidden');
@@ -499,7 +452,6 @@ function calculateDoppler(){
     copyBtn.classList.add('hidden');
   }
 }
-
 async function copyDopplerResults(){
   if(!lastDopplerText) return;
   try{
@@ -519,7 +471,6 @@ async function copyDopplerResults(){
   button.textContent='✓ Copié';
   setTimeout(()=>button.textContent=original,1200);
 }
-
 function resetDoppler(){
   document.getElementById('ua-pi').value='';
   document.getElementById('mca-pi').value='';
@@ -528,7 +479,6 @@ function resetDoppler(){
   document.getElementById('copy-doppler-button').classList.add('hidden');
   lastDopplerText='';
 }
-
 function discordance(){
   const a=Number(document.getElementById('big').value);
   const b=Number(document.getElementById('small').value);
@@ -541,7 +491,6 @@ function discordance(){
     '<strong>'+v.toFixed(1).replace('.',',')+' %</strong><br>' +
     '(EPF la plus élevée − EPF la plus faible) / EPF la plus élevée × 100.';
 }
-
 function terme(){
   const input=document.getElementById('ddg');
   const box=document.getElementById('terme-result');
@@ -558,7 +507,6 @@ function terme(){
   const amenorrheaDays=elapsed+14;
   const weeks=Math.floor(amenorrheaDays/7);
   const days=((amenorrheaDays%7)+7)%7;
-
   const term=new Date(ddg);
   term.setDate(term.getDate()+273);
 
@@ -571,7 +519,6 @@ function terme(){
 
   box.innerHTML=current+'<br>Terme à 41 SA : <strong>'+term.toLocaleDateString('fr-FR')+'</strong>';
 }
-
 function resetTerme(){
   document.getElementById('ddg').value='';
   document.getElementById('terme-result').textContent='Renseignez la date de début de grossesse.';
