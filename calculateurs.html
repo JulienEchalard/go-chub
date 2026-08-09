@@ -75,9 +75,7 @@
   <div class="notice validation">
     <strong>Méthode :</strong> l’EPF est calculée automatiquement avec la formule de Hadlock utilisant le PC, le PA et la LF. Les percentiles sont déterminés à partir des équations de régression quantile OMS, puis interpolés entre les courbes publiées.
   </div>
-  <p class="source">
-    Cette version est destinée à être comparée au calculateur de Port-Royal sur plusieurs cas tests avant validation institutionnelle.
-  </p>
+  
 </section>
 
 <section id="doppler" class="panel">
@@ -116,20 +114,20 @@
     Ultrasound Obstet Gynecol. 2019;53:465–472. Méthode de calcul des percentiles clarifiée par Wright et al., 2021.
   </p>
   <div class="buttonrow">
-    <a class="button secondary" href="https://archive.fetalmedicine.org/research/doppler" target="_blank" rel="noopener" style="text-decoration:none">Comparer au calculateur FMF ↗</a>
+    
   </div>
 </section>
 
 <section id="cn" class="panel">
-  <span class="badge">Perinatology · CN/LCC · V8.6 bêta</span>
+  <span class="badge">Perinatology · CN/LCC · V9</span>
   <h2 style="margin-top:10px">Clarté nucale et âge gestationnel selon la LCC</h2>
   <p>Calcul natif GO-CHUB reproduisant les équations utilisées par le calculateur Perinatology.</p>
 
   <div class="formgrid">
     <div class="field">
       <label>LCC</label>
-      <div class="unit"><input id="nt-crl" type="number" min="2" max="85" step="0.1" placeholder="ex. 55" oninput="calculateNT()"><span>mm</span></div>
-      <div class="form-help">Plage de datation : 2–85 mm.</div>
+      <div class="unit"><input id="nt-crl" type="number" min="6" max="84" step="0.1" placeholder="ex. 55" oninput="calculateNT()"><span>mm</span></div>
+      <div class="form-help">Plage de datation : 6–84 mm.</div>
     </div>
     <div class="field">
       <label>Clarté nucale <span style="font-weight:400">(facultatif)</span></label>
@@ -145,16 +143,14 @@
 
   <div id="nt-results" class="results hidden"></div>
 
-  <div class="notice validation">
-    <strong>Version de validation :</strong> âge gestationnel interpolé sur les points validés contre Perinatology ; médiane CN utilisée uniquement en interne ; percentile CN arrondi à l’entier le plus proche comme sur Perinatology.
-  </div>
+  
 
   <p class="source">
-    Références : Robinson HP, Fleming JEE. Br J Obstet Gynaecol. 1975 ; Chung JH et al. J Korean Med Sci. 2004. Comparaison externe : Perinatology CRL &amp; Nuchal Translucency Calculator.
+    Références : Robinson HP, Fleming JEE. Br J Obstet Gynaecol. 1975 ; Chung JH et al. J Korean Med Sci. 2004. 
   </p>
 
   <div class="buttonrow">
-    <a class="button secondary" href="https://perinatology.com/calculators/Crown%20Rump%20and%20Nuchal%20Translucency.htm" target="_blank" rel="noopener" style="text-decoration:none">Comparer à Perinatology ↗</a>
+    
   </div>
 </section>
 
@@ -196,7 +192,7 @@
 </section>
 </main>
 
-<footer>GO-CHUB · V8.6 bêta</footer>
+<footer>GO-CHUB · V9</footer>
 
 <script>
 // Références OMS intégrées directement dans la page pour éviter tout échec de chargement
@@ -507,7 +503,7 @@ function ntSigma(crl){
   return 0.58203 - 0.0004391*crl;
 }
 function crlGestationalAgeDays(crl){
-  // V8.6 : interpolation sur points validés directement contre Perinatology.
+  // V9 : interpolation sur points validés directement contre Perinatology.
   // Les extrémités 2 et 85 mm sont conservées sur la courbe Robinson–Fleming.
   const anchors=[
     [2,35],[6,45],[10,50],[15,55],[45,79],[47,81],[54,84],[55,85],
