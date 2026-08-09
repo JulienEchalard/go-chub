@@ -106,7 +106,7 @@
 
   <div id="doppler-results" class="results hidden"></div>
   <div class="notice validation">
-    <strong>Calcul natif GO-CHUB :</strong> les percentiles sont calculés à partir des références FMF. Le CPR est calculé automatiquement par IP ACM ÷ IP AO. Code couleur : vert si normal ; percentiles affichés au dixième ; rouge si IP AO > P95,0 ou CPR < P5,0.
+    <strong>Calcul natif GO-CHUB :</strong> les percentiles sont calculés à partir des références FMF. Le CPR est calculé automatiquement par IP ACM ÷ IP AO. Code couleur : vert si normal ; rouge si IP AO > P95 ou percentile affiché du CPR < P5.
   </div>
   <p class="source">
     Référence : Ciobanu A, Wright A, Syngelaki A, Wright D, Akolekar R, Nicolaides KH.
@@ -119,7 +119,7 @@
 </section>
 
 <section id="cn" class="panel">
-  <span class="badge">Perinatology · CN/LCC · V9.2</span>
+  <span class="badge">Perinatology · CN/LCC · V9.3</span>
   <h2 style="margin-top:10px">Clarté nucale et âge gestationnel selon la LCC</h2>
   <p>Calcul natif GO-CHUB reproduisant les équations utilisées par le calculateur Perinatology.</p>
 
@@ -173,7 +173,7 @@
 </section>
 </main>
 
-<footer>GO-CHUB · V9.2</footer>
+<footer>GO-CHUB · V9.3</footer>
 
 <script>
 // Références OMS intégrées directement dans la page pour éviter tout échec de chargement
@@ -347,13 +347,9 @@ function normalCDF(z){
   return 0.5*(1+erfApprox(z/Math.sqrt(2)));
 }
 function percentileFromZ(z){
-  const p=0.5*(1+erfApprox(z/Math.SQRT2))*100;
-  const displayed=Math.round(p*10)/10;
-  return {
-    p:p,
-    rounded:displayed,
-    label:'P'+displayed.toFixed(1).replace('.',',')
-  };
+  const p=normalCDF(z)*100;
+  const rounded=Math.max(0,Math.min(100,Math.ceil(p)));
+  return {p:p,rounded:rounded,label:'P'+rounded};
 }
 
 function dopplerReference(gaDays){
@@ -393,7 +389,7 @@ function dopplerCalcOne(value, ref){
 function dopplerCard(name,value,r,kind){
   let cls='normal';
   if(kind==='ua' && r.p>95) cls='low';
-  if(kind==='cpr' && r.p<5) cls='low';
+  if(kind==='cpr' && r.rounded<5) cls='low';
   return `<div class="result ${cls}">
     <small>${name} · ${value.toFixed(2).replace('.',',')}</small>
     <strong>${r.label}</strong>
