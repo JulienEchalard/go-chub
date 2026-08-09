@@ -27,7 +27,7 @@
 <a class="back" href="index.html">← Retour à l’accueil</a>
 
 <section id="oms" class="panel">
-  <span class="badge">Version 7.2</span>
+  <span class="badge">Version 8.2</span>
   <h2 style="margin-top:10px">EPF et biométries OMS</h2>
 
   <div class="formgrid">
@@ -86,26 +86,48 @@
 </section>
 
 <section id="doppler" class="panel">
-  <span class="badge">Référence FMF</span>
+  <span class="badge">Références FMF · Ciobanu et al. 2019</span>
   <h2 style="margin-top:10px">Dopplers fœtaux</h2>
 
-  <div style="border:1px solid var(--line);border-radius:15px;overflow:hidden;background:white">
-    <iframe
-      title="Calculateur Doppler officiel FMF"
-      src="https://archive.fetalmedicine.org/research/doppler"
-      style="width:100%;height:920px;border:0;background:white"
-      loading="lazy"
-      referrerpolicy="no-referrer-when-downgrade">
-    </iframe>
+  <div class="formgrid">
+    <div class="field">
+      <label>Semaines d’aménorrhée</label>
+      <input id="doppler-weeks" type="number" min="20" max="42" value="32" oninput="calculateDoppler()">
+    </div>
+    <div class="field">
+      <label>Jours</label>
+      <input id="doppler-days" type="number" min="0" max="6" value="0" oninput="calculateDoppler()">
+    </div>
+    <div class="field">
+      <label>IP artère ombilicale</label>
+      <input id="ua-pi" type="number" min="0.01" step="0.01" placeholder="ex. 0,95" oninput="calculateDoppler()">
+    </div>
+    <div class="field">
+      <label>IP artère cérébrale moyenne</label>
+      <input id="mca-pi" type="number" min="0.01" step="0.01" placeholder="ex. 1,80" oninput="calculateDoppler()">
+    </div>
   </div>
 
   <div class="buttonrow">
-    <a class="button" href="https://archive.fetalmedicine.org/research/doppler" target="_blank" rel="noopener" style="text-decoration:none">Ouvrir le calculateur FMF ↗</a>
+    <button id="copy-doppler-button" class="button secondary hidden" onclick="copyDopplerResults()">📋 Copier</button>
+    <button class="button secondary" onclick="resetDoppler()">Effacer</button>
+  </div>
+
+  <div id="doppler-results" class="results hidden"></div>
+
+  <div class="notice validation">
+    <strong>Calcul natif GO-CHUB :</strong> les z-scores sont calculés sur l’échelle log10 selon les équations publiées par la FMF. Le CPR est calculé automatiquement par IP ACM ÷ IP AO.
   </div>
 
   <p class="source">
-    Calculateur officiel FMF : IP ombilical, IP cérébral moyen et rapport cérébroplacentaire selon le terme.
+    Référence : Ciobanu A, Wright A, Syngelaki A, Wright D, Akolekar R, Nicolaides KH.
+    <em>Fetal Medicine Foundation reference ranges for umbilical artery and middle cerebral artery pulsatility index and cerebroplacental ratio.</em>
+    Ultrasound Obstet Gynecol. 2019;53:465–472. Méthode de calcul des percentiles clarifiée par Wright et al., 2021.
   </p>
+
+  <div class="buttonrow">
+    <a class="button secondary" href="https://archive.fetalmedicine.org/research/doppler" target="_blank" rel="noopener" style="text-decoration:none">Comparer au calculateur FMF ↗</a>
+  </div>
 </section>
 
 <section id="cn" class="panel">
@@ -169,7 +191,7 @@
 </section>
 </main>
 
-<footer>GO-CHUB · V7.3</footer>
+<footer>GO-CHUB · V8</footer>
 
 <script>
 // Références OMS intégrées directement dans la page pour éviter tout échec de chargement
@@ -343,6 +365,157 @@ function scheduleWHO(){
     const fl=Number(document.getElementById('fl').value);
     if(hc>0 || ac>0 || fl>0) calculateWHO();
   },120);
+}
+
+
+let lastDopplerText='';
+
+function erfApprox(x){
+  // Abramowitz & Stegun 7.1.26
+  const sign=x<0?-1:1;
+  x=Math.abs(x);
+  const a1=0.254829592, a2=-0.284496736, a3=1.421413741,
+        a4=-1.453152027, a5=1.061405429, p=0.3275911;
+  const t=1/(1+p*x);
+  const y=1-(((((a5*t+a4)*t)+a3)*t+a2)*t+a1)*t*Math.exp(-x*x);
+  return sign*y;
+}
+
+function normalCDF(z){
+  return 0.5*(1+erfApprox(z/Math.sqrt(2)));
+}
+
+function percentileFromZ(z){
+  const p=normalCDF(z)*100;
+  if(p<0.1) return {p:p,label:'< P0,1',status:'low'};
+  if(p>99.9) return {p:p,label:'> P99,9',status:'high'};
+  return {
+    p:p,
+    label:'P'+p.toFixed(1).replace('.',','),
+    status:p<10?'low':p>90?'high':'normal'
+  };
+}
+
+function dopplerReference(gaDays){
+  // Table S1, Ciobanu et al. UOG 2019.
+  // UA median is on natural scale; MCA and CPR medians are on log10 scale.
+  // All SD equations are SD of log10(measurement).
+  const uaMedian = 1.6473 - 0.003005*gaDays;
+  const uaSdLog = 0.08713 - 0.0002936*gaDays + 0.0000009355*gaDays**2;
+
+  const mcaMedianLog = 0.3117 - 0.007100*gaDays + 0.00006345*gaDays**2 - 0.0000001443*gaDays**3;
+  const mcaSdLog = 0.1708 - 0.001199*gaDays + 0.000003211*gaDays**2;
+
+  const cprMedianLog = -0.3564 + 0.0003969*gaDays + 0.00003199*gaDays**2 - 0.00000009266*gaDays**3;
+  const cprSdLog = 0.1948 - 0.001220*gaDays + 0.000003262*gaDays**2;
+
+  return {
+    ua:{medianLog:Math.log10(uaMedian),sdLog:uaSdLog,median:uaMedian},
+    mca:{medianLog:mcaMedianLog,sdLog:mcaSdLog,median:10**mcaMedianLog},
+    cpr:{medianLog:cprMedianLog,sdLog:cprSdLog,median:10**cprMedianLog}
+  };
+}
+
+function dopplerCalcOne(value, ref){
+  if(!(value>0) || !(ref.sdLog>0)) return null;
+  const z=(Math.log10(value)-ref.medianLog)/ref.sdLog;
+  const pct=percentileFromZ(z);
+  return {z:z,p:pct.p,label:pct.label,status:pct.status,median:ref.median};
+}
+
+function dopplerCard(name,value,r){
+  return `<div class="result ${r.status}">
+    <small>${name} · ${value.toFixed(2).replace('.',',')}</small>
+    <strong>${r.label}</strong>
+    <small>Z ${r.z.toFixed(2).replace('.',',')} · médiane ${r.median.toFixed(2).replace('.',',')}</small>
+  </div>`;
+}
+
+function calculateDoppler(){
+  const w=Number(document.getElementById('doppler-weeks').value);
+  const d=Number(document.getElementById('doppler-days').value);
+  const ua=Number(document.getElementById('ua-pi').value);
+  const mca=Number(document.getElementById('mca-pi').value);
+  const box=document.getElementById('doppler-results');
+  const copyBtn=document.getElementById('copy-doppler-button');
+
+  if(w<20 || w>42 || d<0 || d>6){
+    box.innerHTML='<div class="notice">Le terme doit être compris entre 20+0 et 42+6 SA.</div>';
+    box.classList.remove('hidden');
+    copyBtn.classList.add('hidden');
+    return;
+  }
+
+  const gaDays=w*7+d;
+  const ref=dopplerReference(gaDays);
+  let out='';
+  const parts=[];
+
+  if(ua>0){
+    const r=dopplerCalcOne(ua,ref.ua);
+    if(r){
+      out+=dopplerCard('IP artère ombilicale',ua,r);
+      parts.push(`IP AO ${ua.toFixed(2).replace('.',',')} (${r.label}; Z ${r.z.toFixed(2).replace('.',',')})`);
+    }
+  }
+
+  if(mca>0){
+    const r=dopplerCalcOne(mca,ref.mca);
+    if(r){
+      out+=dopplerCard('IP artère cérébrale moyenne',mca,r);
+      parts.push(`IP ACM ${mca.toFixed(2).replace('.',',')} (${r.label}; Z ${r.z.toFixed(2).replace('.',',')})`);
+    }
+  }
+
+  if(ua>0 && mca>0){
+    const cpr=mca/ua;
+    const r=dopplerCalcOne(cpr,ref.cpr);
+    if(r){
+      out+=dopplerCard('CPR',cpr,r);
+      parts.push(`CPR ${cpr.toFixed(2).replace('.',',')} (${r.label}; Z ${r.z.toFixed(2).replace('.',',')})`);
+    }
+  }
+
+  if(out){
+    box.innerHTML=out;
+    box.classList.remove('hidden');
+    lastDopplerText=`Dopplers à ${w}+${d} SA : `+parts.join(', ')+'.';
+    copyBtn.classList.remove('hidden');
+  }else{
+    box.classList.add('hidden');
+    box.innerHTML='';
+    lastDopplerText='';
+    copyBtn.classList.add('hidden');
+  }
+}
+
+async function copyDopplerResults(){
+  if(!lastDopplerText) return;
+  try{
+    await navigator.clipboard.writeText(lastDopplerText);
+  }catch(e){
+    const area=document.createElement('textarea');
+    area.value=lastDopplerText;
+    area.style.position='fixed';
+    area.style.opacity='0';
+    document.body.appendChild(area);
+    area.select();
+    document.execCommand('copy');
+    area.remove();
+  }
+  const button=document.getElementById('copy-doppler-button');
+  const original=button.textContent;
+  button.textContent='✓ Copié';
+  setTimeout(()=>button.textContent=original,1200);
+}
+
+function resetDoppler(){
+  document.getElementById('ua-pi').value='';
+  document.getElementById('mca-pi').value='';
+  document.getElementById('doppler-results').classList.add('hidden');
+  document.getElementById('doppler-results').innerHTML='';
+  document.getElementById('copy-doppler-button').classList.add('hidden');
+  lastDopplerText='';
 }
 
 function discordance(){

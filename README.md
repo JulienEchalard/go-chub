@@ -1,4 +1,4 @@
-# GO-CHUB V7
+# GO-CHUB V8
 
 ## Mise à jour sur GitHub
 
@@ -83,3 +83,13 @@ Correction de l’évaluation polynomiale : PC, PA et EPF utilisent quatre coeff
 
 ## Correctif V7.3
 Les coefficients OMS sont désormais intégrés directement dans `calculateurs.html`. Cela supprime la dépendance au chargement asynchrone de `assets/who-coefficients.json`, qui pouvait laisser PC, PA et EPF sans résultat selon le cache/PWA. Cache renommé `go-chub-v7-2`.
+
+
+## Nouveautés V8 – Doppler natif FMF
+- Suppression de l’iframe comme interface principale.
+- Saisie directe du terme, de l’IP ombilical et de l’IP ACM.
+- CPR calculé automatiquement.
+- Percentile et z-score instantanés pour AO, ACM et CPR.
+- Équations et coefficients FMF publiés intégrés directement dans GO-CHUB.
+- Bouton Copier.
+- Le lien vers le calculateur FMF reste disponible uniquement pour comparaison/validation.
