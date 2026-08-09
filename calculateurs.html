@@ -173,7 +173,7 @@
 </section>
 </main>
 
-<footer>GO-CHUB · V9.7</footer>
+<footer>GO-CHUB · V9.8</footer>
 
 <script>
 // Références OMS intégrées directement dans la page pour éviter tout échec de chargement
@@ -517,13 +517,13 @@ function ntSigma(crl){
   return 0.58203 - 0.0004391*crl;
 }
 function crlGestationalAgeDays(crl){
-  // V9.7 : datation LCC 6–84 mm calée sur les sorties concordantes
+  // V9.8 : datation LCC 6–84 mm calée sur les sorties concordantes
   // Perinatology / table de datation LCC (références Robinson-Fleming).
   // On interpole entre des points entiers de référence, puis on arrondit
   // au jour entier le plus proche.
   const anchors=[
-    [6,45],[7,46],[8,47],[9,49],[10,50],
-    [11,51],[12,52],[13,53],[14,54],[15,55],
+    [6,45],[7,46],[8,47],[9,48],[10,50],
+    [11,50],[12,52],[13,53],[14,54],[15,55],
     [16,56],[17,57],[18,58],[19,59],[20,60],
     [21,61],[22,62],[23,63],[24,64],[25,65],
     [30,69],[35,73],[40,76],[45,79],[47,81],
