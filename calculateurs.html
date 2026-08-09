@@ -173,7 +173,7 @@
 </section>
 </main>
 
-<footer>GO-CHUB</footer>
+<footer>GO-CHUB · V9.6</footer>
 
 <script>
 // Références OMS intégrées directement dans la page pour éviter tout échec de chargement
@@ -517,10 +517,9 @@ function ntSigma(crl){
   return 0.58203 - 0.0004391*crl;
 }
 function crlGestationalAgeDays(crl){
-  // V9.1 : formule continue de datation LCC, calibrée sur Perinatology.
+  // V9.6 : même formule de datation LCC, mais arrondi au jour le plus proche.
   // AG (jours) = 23,73 + 8,052 × sqrt(LCC × 1,037)
-  // Perinatology correspond à l'arrondi au jour supérieur.
-  return Math.ceil(23.73 + 8.052*Math.sqrt(crl*1.037));
+  return Math.round(23.73 + 8.052*Math.sqrt(crl*1.037));
 }
 function calculateNT(){
   const crl=Number(document.getElementById('nt-crl').value);
