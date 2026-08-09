@@ -93,3 +93,12 @@ Les coefficients OMS sont désormais intégrés directement dans `calculateurs.h
 - Équations et coefficients FMF publiés intégrés directement dans GO-CHUB.
 - Bouton Copier.
 - Le lien vers le calculateur FMF reste disponible uniquement pour comparaison/validation.
+
+
+## V8.1
+- Percentiles Doppler arrondis à l'entier.
+- Z-scores masqués.
+- Vert si normal.
+- Rouge si UA-PI > P95.
+- Rouge si CPR < P5.
+- Correction spécifique de la dispersion MCA en fin de grossesse pour se rapprocher du calculateur FMF archivé.

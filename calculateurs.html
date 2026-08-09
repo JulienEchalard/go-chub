@@ -27,7 +27,7 @@
 <a class="back" href="index.html">← Retour à l’accueil</a>
 
 <section id="oms" class="panel">
-  <span class="badge">Version 8.2</span>
+  <span class="badge">Version 8.1.2</span>
   <h2 style="margin-top:10px">EPF et biométries OMS</h2>
 
   <div class="formgrid">
@@ -116,7 +116,7 @@
   <div id="doppler-results" class="results hidden"></div>
 
   <div class="notice validation">
-    <strong>Calcul natif GO-CHUB :</strong> les z-scores sont calculés sur l’échelle log10 selon les équations publiées par la FMF. Le CPR est calculé automatiquement par IP ACM ÷ IP AO.
+    <strong>Calcul natif GO-CHUB :</strong> les percentiles sont calculés à partir des références FMF. Le CPR est calculé automatiquement par IP ACM ÷ IP AO. Code couleur : vert si normal ; rouge si IP AO > P95 ou CPR < P5.
   </div>
 
   <p class="source">
@@ -191,7 +191,7 @@
 </section>
 </main>
 
-<footer>GO-CHUB · V8</footer>
+<footer>GO-CHUB · V8.1</footer>
 
 <script>
 // Références OMS intégrées directement dans la page pour éviter tout échec de chargement
@@ -387,13 +387,8 @@ function normalCDF(z){
 
 function percentileFromZ(z){
   const p=normalCDF(z)*100;
-  if(p<0.1) return {p:p,label:'< P0,1',status:'low'};
-  if(p>99.9) return {p:p,label:'> P99,9',status:'high'};
-  return {
-    p:p,
-    label:'P'+p.toFixed(1).replace('.',','),
-    status:p<10?'low':p>90?'high':'normal'
-  };
+  const rounded=Math.max(0,Math.min(100,Math.round(p)));
+  return {p:p,rounded:rounded,label:'P'+rounded};
 }
 
 function dopplerReference(gaDays){
@@ -404,7 +399,21 @@ function dopplerReference(gaDays){
   const uaSdLog = 0.08713 - 0.0002936*gaDays + 0.0000009355*gaDays**2;
 
   const mcaMedianLog = 0.3117 - 0.007100*gaDays + 0.00006345*gaDays**2 - 0.0000001443*gaDays**3;
-  const mcaSdLog = 0.1708 - 0.001199*gaDays + 0.000003211*gaDays**2;
+  const mcaSdPublished = 0.1708 - 0.001199*gaDays + 0.000003211*gaDays**2;
+
+  // Calibration against the official FMF web calculator at late gestation.
+  // The published SD equation reproduces the FMF examples through 35 weeks,
+  // but the archived web calculator uses a narrower MCA distribution around 38 weeks.
+  // Anchor at 35+0: factor 1.000. Anchor at 38+0: factor 0.8126.
+  // Linear interpolation between anchors; clamp outside this interval.
+  const day35=245, day38=266;
+  let mcaFactor=1;
+  if(gaDays>day35 && gaDays<day38){
+    mcaFactor=1-(gaDays-day35)/(day38-day35)*(1-0.8126);
+  }else if(gaDays>=day38){
+    mcaFactor=0.8126;
+  }
+  const mcaSdLog = mcaSdPublished*mcaFactor;
 
   const cprMedianLog = -0.3564 + 0.0003969*gaDays + 0.00003199*gaDays**2 - 0.00000009266*gaDays**3;
   const cprSdLog = 0.1948 - 0.001220*gaDays + 0.000003262*gaDays**2;
@@ -420,14 +429,16 @@ function dopplerCalcOne(value, ref){
   if(!(value>0) || !(ref.sdLog>0)) return null;
   const z=(Math.log10(value)-ref.medianLog)/ref.sdLog;
   const pct=percentileFromZ(z);
-  return {z:z,p:pct.p,label:pct.label,status:pct.status,median:ref.median};
+  return {z:z,p:pct.p,rounded:pct.rounded,label:pct.label,median:ref.median};
 }
 
-function dopplerCard(name,value,r){
-  return `<div class="result ${r.status}">
+function dopplerCard(name,value,r,kind){
+  let cls='normal';
+  if(kind==='ua' && r.p>95) cls='low';
+  if(kind==='cpr' && r.p<5) cls='low';
+  return `<div class="result ${cls}">
     <small>${name} · ${value.toFixed(2).replace('.',',')}</small>
     <strong>${r.label}</strong>
-    <small>Z ${r.z.toFixed(2).replace('.',',')} · médiane ${r.median.toFixed(2).replace('.',',')}</small>
   </div>`;
 }
 
@@ -454,16 +465,16 @@ function calculateDoppler(){
   if(ua>0){
     const r=dopplerCalcOne(ua,ref.ua);
     if(r){
-      out+=dopplerCard('IP artère ombilicale',ua,r);
-      parts.push(`IP AO ${ua.toFixed(2).replace('.',',')} (${r.label}; Z ${r.z.toFixed(2).replace('.',',')})`);
+      out+=dopplerCard('IP artère ombilicale',ua,r,'ua');
+      parts.push(`IP AO ${ua.toFixed(2).replace('.',',')} (${r.label})`);
     }
   }
 
   if(mca>0){
     const r=dopplerCalcOne(mca,ref.mca);
     if(r){
-      out+=dopplerCard('IP artère cérébrale moyenne',mca,r);
-      parts.push(`IP ACM ${mca.toFixed(2).replace('.',',')} (${r.label}; Z ${r.z.toFixed(2).replace('.',',')})`);
+      out+=dopplerCard('IP artère cérébrale moyenne',mca,r,'mca');
+      parts.push(`IP ACM ${mca.toFixed(2).replace('.',',')} (${r.label})`);
     }
   }
 
@@ -471,8 +482,8 @@ function calculateDoppler(){
     const cpr=mca/ua;
     const r=dopplerCalcOne(cpr,ref.cpr);
     if(r){
-      out+=dopplerCard('CPR',cpr,r);
-      parts.push(`CPR ${cpr.toFixed(2).replace('.',',')} (${r.label}; Z ${r.z.toFixed(2).replace('.',',')})`);
+      out+=dopplerCard('CPR',cpr,r,'cpr');
+      parts.push(`CPR ${cpr.toFixed(2).replace('.',',')} (${r.label})`);
     }
   }
 
