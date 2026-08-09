@@ -26,7 +26,7 @@
 <a class="back" href="index.html">← Retour à l’accueil</a>
 
 <section id="oms" class="panel">
-  <span class="badge">Version 8.3 bêta</span>
+  <span class="badge">Version 8.4 bêta</span>
   <h2 style="margin-top:10px">EPF et biométries OMS</h2>
   <div class="formgrid">
     <div class="field">
@@ -121,32 +121,40 @@
 </section>
 
 <section id="cn" class="panel">
-  <span class="badge">FMF · Wright et al. 2008 · V8.3 bêta</span>
-  <h2 style="margin-top:10px">Clarté nucale selon la LCC</h2>
-  <p>Calcul natif GO-CHUB à comparer au calculateur FMF avant validation définitive.</p>
+  <span class="badge">Perinatology · CN/LCC · V8.4 bêta</span>
+  <h2 style="margin-top:10px">Clarté nucale et âge gestationnel selon la LCC</h2>
+  <p>Calcul natif GO-CHUB reproduisant les équations utilisées par le calculateur Perinatology.</p>
+
   <div class="formgrid">
     <div class="field">
       <label>LCC</label>
-      <div class="unit"><input id="nt-crl" type="number" min="45" max="84" step="0.1" placeholder="ex. 60" oninput="calculateNT()"><span>mm</span></div>
+      <div class="unit"><input id="nt-crl" type="number" min="2" max="85" step="0.1" placeholder="ex. 55" oninput="calculateNT()"><span>mm</span></div>
+      <div class="form-help">Plage de datation : 2–85 mm.</div>
     </div>
     <div class="field">
-      <label>Clarté nucale</label>
+      <label>Clarté nucale <span style="font-weight:400">(facultatif)</span></label>
       <div class="unit"><input id="nt-value" type="number" min="0.1" step="0.1" placeholder="ex. 1,8" oninput="calculateNT()"><span>mm</span></div>
+      <div class="form-help">Le percentile CN est surtout interprétable pour une LCC de 45–84 mm.</div>
     </div>
   </div>
+
   <div class="buttonrow">
     <button id="copy-nt-button" class="button secondary hidden" onclick="copyNTResults()">📋 Copier</button>
     <button class="button secondary" onclick="resetNT()">Effacer</button>
   </div>
+
   <div id="nt-results" class="results hidden"></div>
+
   <div class="notice validation">
-    <strong>Version de validation :</strong> médiane attendue selon la LCC et distribution logarithmique de référence. Le percentile est arrondi à l’entier pour faciliter la comparaison directe avec la FMF.
+    <strong>Version de validation :</strong> âge gestationnel par Robinson–Fleming corrigé ; CN attendue = 0,437 + 0,01969 × LCC ; percentile par z-score avec σ = 0,56 mm. Affichage arrondi pour comparaison directe à Perinatology.
   </div>
+
   <p class="source">
-    Référence : Wright D, Kagan KO, Molina FS, Gazzoni A, Nicolaides KH. <em>A mixture model of nuchal translucency thickness in screening for chromosomal defects.</em> Ultrasound Obstet Gynecol. 2008;31:376–383. Plage de validation : LCC 45–84 mm.
+    Références : Robinson HP, Fleming JEE. Br J Obstet Gynaecol. 1975 ; Chung JH et al. J Korean Med Sci. 2004. Comparaison externe : Perinatology CRL &amp; Nuchal Translucency Calculator.
   </p>
+
   <div class="buttonrow">
-    <a class="button secondary" href="https://archive.fetalmedicine.org/research/assess/nt" target="_blank" rel="noopener" style="text-decoration:none">Comparer au calculateur FMF ↗</a>
+    <a class="button secondary" href="https://perinatology.com/calculators/Crown%20Rump%20and%20Nuchal%20Translucency.htm" target="_blank" rel="noopener" style="text-decoration:none">Comparer à Perinatology ↗</a>
   </div>
 </section>
 
@@ -188,7 +196,7 @@
 </section>
 </main>
 
-<footer>GO-CHUB · V8.3 bêta</footer>
+<footer>GO-CHUB · V8.4 bêta</footer>
 
 <script>
 // Références OMS intégrées directement dans la page pour éviter tout échec de chargement
@@ -491,59 +499,70 @@ function resetDoppler(){
   lastDopplerText='';
 }
 let lastNTText='';
-function ntReference(crl){
-  // Median reference used in FMF-based NT quality-control literature.
-  // log10(NT median) = -0.3599 + 0.0127*CRL - 0.000058*CRL²
-  const medianLog10=-0.3599 + 0.0127*crl - 0.000058*crl*crl;
-  const median=10**medianLog10;
-  // Wright et al. 2008: SD of the CRL-dependent log10 distribution ≈ 0.079.
-  const sdLog10=0.079;
-  return {medianLog10,median,sdLog10};
+function ntExpected(crl){
+  return 0.437 + 0.01969*crl;
+}
+function crlGestationalAgeDays(crl){
+  // Corrected Robinson–Fleming equation used by Perinatology-type CRL dating tools.
+  // Perinatology display matches upward rounding to the next whole day.
+  return Math.ceil(8.052*Math.sqrt(crl*1.037) + 23.73);
 }
 function calculateNT(){
   const crl=Number(document.getElementById('nt-crl').value);
-  const nt=Number(document.getElementById('nt-value').value);
+  const ntRaw=document.getElementById('nt-value').value;
+  const nt=Number(ntRaw);
+  const hasNT=ntRaw!=='' && Number.isFinite(nt) && nt>0;
   const box=document.getElementById('nt-results');
   const copyBtn=document.getElementById('copy-nt-button');
-  if(!crl && !nt){
+
+  if(!crl){
     box.classList.add('hidden');
     copyBtn.classList.add('hidden');
     lastNTText='';
     return;
   }
-  if(!(crl>=45 && crl<=84)){
-    box.innerHTML='<div class="notice">La LCC doit être comprise entre 45 et 84 mm.</div>';
+  if(!(crl>=2 && crl<=85)){
+    box.innerHTML='<div class="notice">La LCC doit être comprise entre 2 et 85 mm.</div>';
     box.classList.remove('hidden');
     copyBtn.classList.add('hidden');
     lastNTText='';
     return;
   }
-  if(!(nt>0)){
-    box.innerHTML='<div class="notice">Renseignez la clarté nucale.</div>';
-    box.classList.remove('hidden');
-    copyBtn.classList.add('hidden');
-    lastNTText='';
-    return;
-  }
-  const ref=ntReference(crl);
-  const z=(Math.log10(nt)-ref.medianLog10)/ref.sdLog10;
-  const pct=percentileFromZ(z);
-  const delta=nt-ref.median;
-  const cls=pct.rounded>=95?'low':'normal';
-  box.innerHTML=`<div class="result ${cls}">
-      <small>Clarté nucale · ${nt.toFixed(1).replace('.',',')} mm</small>
-      <strong>${pct.label}</strong>
+
+  const gaDays=crlGestationalAgeDays(crl);
+  const gaW=Math.floor(gaDays/7);
+  const gaD=gaDays%7;
+  const expected=ntExpected(crl);
+
+  let html=`<div class="result normal">
+      <small>Âge gestationnel estimé · LCC ${crl.toFixed(1).replace('.',',')} mm</small>
+      <strong>${gaW} SA + ${gaD} j</strong>
     </div>
     <div class="result normal">
-      <small>Médiane attendue pour LCC ${crl.toFixed(1).replace('.',',')} mm</small>
-      <strong>${ref.median.toFixed(2).replace('.',',')} mm</strong>
-    </div>
-    <div class="result normal">
-      <small>Delta CN</small>
-      <strong>${delta>=0?'+':''}${delta.toFixed(2).replace('.',',')} mm</strong>
+      <small>CN attendue (médiane)</small>
+      <strong>${expected.toFixed(2).replace('.',',')} mm</strong>
     </div>`;
+
+  let copy=`LCC ${crl.toFixed(1).replace('.',',')} mm : âge gestationnel estimé ${gaW} SA + ${gaD} j ; CN attendue ${expected.toFixed(2).replace('.',',')} mm`;
+
+  if(hasNT){
+    const z=(nt-expected)/0.56;
+    const pct=percentileFromZ(z);
+    const cls=pct.rounded>=95?'low':'normal';
+    html += `<div class="result ${cls}">
+        <small>Clarté nucale · ${nt.toFixed(1).replace('.',',')} mm</small>
+        <strong>${pct.label}</strong>
+      </div>
+      <div class="result normal">
+        <small>Z-score</small>
+        <strong>${z.toFixed(2).replace('.',',')}</strong>
+      </div>`;
+    copy += ` ; CN mesurée ${nt.toFixed(1).replace('.',',')} mm (${pct.label}, z ${z.toFixed(2).replace('.',',')})`;
+  }
+
+  box.innerHTML=html;
   box.classList.remove('hidden');
-  lastNTText=`Clarté nucale : LCC ${crl.toFixed(1).replace('.',',')} mm, CN ${nt.toFixed(1).replace('.',',')} mm (${pct.label}), médiane ${ref.median.toFixed(2).replace('.',',')} mm, delta ${delta>=0?'+':''}${delta.toFixed(2).replace('.',',')} mm.`;
+  lastNTText=copy+'.';
   copyBtn.classList.remove('hidden');
 }
 async function copyNTResults(){
