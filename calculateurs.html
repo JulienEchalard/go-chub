@@ -119,7 +119,7 @@
 </section>
 
 <section id="cn" class="panel">
-  <span class="badge">Perinatology · CN/LCC · V9</span>
+  <span class="badge">Perinatology · CN/LCC · V9.1</span>
   <h2 style="margin-top:10px">Clarté nucale et âge gestationnel selon la LCC</h2>
   <p>Calcul natif GO-CHUB reproduisant les équations utilisées par le calculateur Perinatology.</p>
 
@@ -192,7 +192,7 @@
 </section>
 </main>
 
-<footer>GO-CHUB · V9</footer>
+<footer>GO-CHUB · V9.1</footer>
 
 <script>
 // Références OMS intégrées directement dans la page pour éviter tout échec de chargement
@@ -503,22 +503,10 @@ function ntSigma(crl){
   return 0.58203 - 0.0004391*crl;
 }
 function crlGestationalAgeDays(crl){
-  // V9 : interpolation sur points validés directement contre Perinatology.
-  // Les extrémités 2 et 85 mm sont conservées sur la courbe Robinson–Fleming.
-  const anchors=[
-    [2,35],[6,45],[10,50],[15,55],[45,79],[47,81],[54,84],[55,85],
-    [60,88],[64,90],[65,90],[70,92],[76,96],[79,97],[80,98],[82,99],[85,100]
-  ];
-  if(crl<=anchors[0][0]) return anchors[0][1];
-  if(crl>=anchors[anchors.length-1][0]) return anchors[anchors.length-1][1];
-  for(let i=0;i<anchors.length-1;i++){
-    const [x1,y1]=anchors[i], [x2,y2]=anchors[i+1];
-    if(crl>=x1 && crl<=x2){
-      const f=(crl-x1)/(x2-x1);
-      return Math.round(y1 + f*(y2-y1));
-    }
-  }
-  return Math.round(8.052*Math.sqrt(crl*1.037)+23.73);
+  // V9.1 : formule continue de datation LCC, calibrée sur Perinatology.
+  // AG (jours) = 23,73 + 8,052 × sqrt(LCC × 1,037)
+  // Perinatology correspond à l'arrondi au jour supérieur.
+  return Math.ceil(23.73 + 8.052*Math.sqrt(crl*1.037));
 }
 function calculateNT(){
   const crl=Number(document.getElementById('nt-crl').value);
@@ -534,8 +522,8 @@ function calculateNT(){
     lastNTText='';
     return;
   }
-  if(!(crl>=2 && crl<=85)){
-    box.innerHTML='<div class="notice">La LCC doit être comprise entre 2 et 85 mm.</div>';
+  if(!(crl>=6 && crl<=84)){
+    box.innerHTML='<div class="notice">La LCC doit être comprise entre 6 et 84 mm.</div>';
     box.classList.remove('hidden');
     copyBtn.classList.add('hidden');
     lastNTText='';
@@ -563,12 +551,8 @@ function calculateNT(){
     html += `<div class="result ${cls}">
         <small>Clarté nucale · ${nt.toFixed(1).replace('.',',')} mm</small>
         <strong>${pct.label}</strong>
-      </div>
-      <div class="result normal">
-        <small>Z-score</small>
-        <strong>${z.toFixed(2).replace('.',',')}</strong>
       </div>`;
-    copy += ` ; CN mesurée ${nt.toFixed(1).replace('.',',')} mm (${pct.label}, z ${z.toFixed(2).replace('.',',')})`;
+    copy += ` ; CN mesurée ${nt.toFixed(1).replace('.',',')} mm (${pct.label})`;
   }
 
   box.innerHTML=html;
