@@ -26,7 +26,7 @@
 <a class="back" href="index.html">← Retour à l’accueil</a>
 
 <section id="oms" class="panel">
-  <span class="badge">Version 8.4 bêta</span>
+  <span class="badge">Références OMS</span>
   <h2 style="margin-top:10px">EPF et biométries OMS</h2>
   <div class="formgrid">
     <div class="field">
@@ -79,7 +79,7 @@
 </section>
 
 <section id="doppler" class="panel">
-  <span class="badge">TEST · FMF recalibré · V9.5</span>
+  <span class="badge">Références FMF · Ciobanu et al. 2019</span>
   <h2 style="margin-top:10px">Dopplers fœtaux</h2>
   <div class="formgrid">
     <div class="field">
@@ -106,12 +106,12 @@
 
   <div id="doppler-results" class="results hidden"></div>
   <div class="notice validation">
-    <strong>Version test FMF V9.5 :</strong> AO et CPR inchangés ; pour l’ACM, dispersion log10 constante et correction minime de médiane déduites des sorties du calculateur FMF afin de compenser l’arrondi des coefficients publiés. Le CPR est calculé automatiquement par IP ACM ÷ IP AO. Code couleur : vert si normal ; rouge si IP AO > P95 ou percentile affiché du CPR < P5.
+    <strong>Méthode :</strong> percentiles calculés à partir des références FMF de Ciobanu et al. 2019, avec application des précisions méthodologiques de Wright et al. 2021. Le CPR est calculé automatiquement par IP ACM ÷ IP AO. Code couleur : vert si normal ; rouge si IP AO > P95 ou percentile affiché du CPR < P5.
   </div>
   <p class="source">
     Référence : Ciobanu A, Wright A, Syngelaki A, Wright D, Akolekar R, Nicolaides KH.
     <em>Fetal Medicine Foundation reference ranges for umbilical artery and middle cerebral artery pulsatility index and cerebroplacental ratio.</em>
-    Ultrasound Obstet Gynecol. 2019;53:465–472. Application selon Wright et al., 2021 (Reply, doi:10.1002/uog.23579), avec recalibrage de précision de l’ACM sur les sorties du calculateur FMF.
+    Ultrasound Obstet Gynecol. 2019;53:465–472. Application selon Wright et al., 2021 (Reply, doi:10.1002/uog.23579).
   </p>
   <div class="buttonrow">
     
@@ -119,9 +119,9 @@
 </section>
 
 <section id="cn" class="panel">
-  <span class="badge">Perinatology · CN/LCC · V9.5 TEST</span>
+  <span class="badge">Références CN/LCC · Perinatology</span>
   <h2 style="margin-top:10px">Clarté nucale et âge gestationnel selon la LCC</h2>
-  <p>Calcul natif GO-CHUB reproduisant les équations utilisées par le calculateur Perinatology.</p>
+  <p>Calcul de l’âge gestationnel selon la LCC et du percentile de clarté nucale selon les équations de référence.</p>
 
   <div class="formgrid">
     <div class="field">
@@ -173,7 +173,7 @@
 </section>
 </main>
 
-<footer>GO-CHUB · V9.5 TEST</footer>
+<footer>GO-CHUB</footer>
 
 <script>
 // Références OMS intégrées directement dans la page pour éviter tout échec de chargement
@@ -353,7 +353,7 @@ function percentileFromZ(z){
 }
 
 function dopplerReference(gaDays){
-  // V9.4 TEST — équations publiées Ciobanu et al. 2019,
+  // V9.4 — équations publiées Ciobanu et al. 2019,
   // appliquées selon la clarification de Wright et al. 2021.
   // Les distributions de MCA-PI et CPR sont traitées sur l'échelle log10.
   // Pour UA-PI, la médiane est linéaire sur l'échelle originale,
