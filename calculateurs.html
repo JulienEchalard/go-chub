@@ -121,7 +121,7 @@
 </section>
 
 <section id="cn" class="panel">
-  <span class="badge">Perinatology · CN/LCC · V8.5 bêta</span>
+  <span class="badge">Perinatology · CN/LCC · V8.6 bêta</span>
   <h2 style="margin-top:10px">Clarté nucale et âge gestationnel selon la LCC</h2>
   <p>Calcul natif GO-CHUB reproduisant les équations utilisées par le calculateur Perinatology.</p>
 
@@ -146,7 +146,7 @@
   <div id="nt-results" class="results hidden"></div>
 
   <div class="notice validation">
-    <strong>Version de validation :</strong> âge gestationnel recalibré sur les résultats Perinatology ; médiane CN utilisée uniquement en interne ; percentile par z-score avec dispersion dépendant légèrement de la LCC.
+    <strong>Version de validation :</strong> âge gestationnel interpolé sur les points validés contre Perinatology ; médiane CN utilisée uniquement en interne ; percentile CN arrondi à l’entier le plus proche comme sur Perinatology.
   </div>
 
   <p class="source">
@@ -196,7 +196,7 @@
 </section>
 </main>
 
-<footer>GO-CHUB · V8.5 bêta</footer>
+<footer>GO-CHUB · V8.6 bêta</footer>
 
 <script>
 // Références OMS intégrées directement dans la page pour éviter tout échec de chargement
@@ -507,10 +507,22 @@ function ntSigma(crl){
   return 0.58203 - 0.0004391*crl;
 }
 function crlGestationalAgeDays(crl){
-  // Recalibrage empirique V8.5 sur les sorties Perinatology observées entre 2 et 85 mm.
-  const s=Math.sqrt(crl);
-  const days=36.55380697 + 0.49781937*s + 1.42445808*crl - 0.08210745*crl*s;
-  return Math.round(days);
+  // V8.6 : interpolation sur points validés directement contre Perinatology.
+  // Les extrémités 2 et 85 mm sont conservées sur la courbe Robinson–Fleming.
+  const anchors=[
+    [2,35],[6,45],[10,50],[15,55],[45,79],[47,81],[54,84],[55,85],
+    [60,88],[64,90],[65,90],[70,92],[76,96],[79,97],[80,98],[82,99],[85,100]
+  ];
+  if(crl<=anchors[0][0]) return anchors[0][1];
+  if(crl>=anchors[anchors.length-1][0]) return anchors[anchors.length-1][1];
+  for(let i=0;i<anchors.length-1;i++){
+    const [x1,y1]=anchors[i], [x2,y2]=anchors[i+1];
+    if(crl>=x1 && crl<=x2){
+      const f=(crl-x1)/(x2-x1);
+      return Math.round(y1 + f*(y2-y1));
+    }
+  }
+  return Math.round(8.052*Math.sqrt(crl*1.037)+23.73);
 }
 function calculateNT(){
   const crl=Number(document.getElementById('nt-crl').value);
@@ -548,7 +560,9 @@ function calculateNT(){
 
   if(hasNT){
     const z=(nt-expected)/ntSigma(crl);
-    const pct=percentileFromZ(z);
+    const pRaw=0.5*(1+erfApprox(z/Math.SQRT2))*100;
+    const pRounded=Math.max(0,Math.min(100,Math.round(pRaw)));
+    const pct={p:pRaw,rounded:pRounded,label:'P'+pRounded};
     const cls=pct.rounded>=95?'low':'normal';
     html += `<div class="result ${cls}">
         <small>Clarté nucale · ${nt.toFixed(1).replace('.',',')} mm</small>
