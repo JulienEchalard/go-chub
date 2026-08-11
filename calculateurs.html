@@ -76,7 +76,79 @@
     <strong>Méthode :</strong> l’EPF est calculée automatiquement avec la formule de Hadlock utilisant le PC, le PA et la LF. Les percentiles sont déterminés à partir des équations de régression quantile OMS, puis interpolés entre les courbes publiées.
   </div>
   
+
 </section>
+
+<section id="srhr" class="panel">
+  <span class="badge">WHO / SRHR · calculateur officiel · TEST V10</span>
+  <h2 style="margin-top:10px">EPF et biométries OMS — SRHR</h2>
+  <p>Deuxième calculateur conservé en parallèle du calculateur OMS actuel pour comparaison clinique.</p>
+
+  <div class="formgrid">
+    <div class="field">
+      <label>Semaines d’aménorrhée</label>
+      <input id="srhr-weeks" type="number" min="14" max="40" value="32" oninput="calculateSRHR()">
+    </div>
+    <div class="field">
+      <label>Jours</label>
+      <input id="srhr-days" type="number" min="0" max="6" value="0" oninput="calculateSRHR()">
+    </div>
+    <div class="field">
+      <label>Sexe fœtal</label>
+      <select id="srhr-sex" onchange="calculateSRHR()">
+        <option value="unknown">Non renseigné</option>
+        <option value="F">Féminin</option>
+        <option value="M">Masculin</option>
+      </select>
+    </div>
+  </div>
+
+  <div class="formgrid" style="margin-top:14px">
+    <div class="field">
+      <label>PC</label>
+      <div class="unit"><input id="srhr-hc" type="number" min="1" step="0.1" placeholder="ex. 290" oninput="calculateSRHR()"><span>mm</span></div>
+    </div>
+    <div class="field">
+      <label>PA</label>
+      <div class="unit"><input id="srhr-ac" type="number" min="1" step="0.1" placeholder="ex. 260" oninput="calculateSRHR()"><span>mm</span></div>
+    </div>
+    <div class="field">
+      <label>LF</label>
+      <div class="unit"><input id="srhr-fl" type="number" min="1" step="0.1" placeholder="ex. 62" oninput="calculateSRHR()"><span>mm</span></div>
+    </div>
+    <div class="field">
+      <label>EPF calculée</label>
+      <div class="unit"><input id="srhr-efw" type="number" readonly placeholder="Automatique"><span>g</span></div>
+      <div class="form-help">Hadlock PC–PA–LF</div>
+    </div>
+    <div class="field">
+      <label>BIP <span style="font-weight:400">(optionnel)</span></label>
+      <div class="unit"><input id="srhr-bpd" type="number" min="1" step="0.1" placeholder="ex. 82" oninput="calculateSRHR()"><span>mm</span></div>
+    </div>
+    <div class="field">
+      <label>Humérus <span style="font-weight:400">(optionnel)</span></label>
+      <div class="unit"><input id="srhr-hl" type="number" min="1" step="0.1" placeholder="ex. 55" oninput="calculateSRHR()"><span>mm</span></div>
+    </div>
+  </div>
+
+  <div class="buttonrow">
+    <button id="copy-srhr-button" class="button secondary hidden" onclick="copySRHRResults()">📋 Copier</button>
+    <button class="button secondary" onclick="resetSRHR()">Effacer</button>
+  </div>
+
+  <div id="srhr-results" class="results hidden"></div>
+
+  <div class="notice validation">
+    <strong>Méthode SRHR :</strong> percentiles calculés à partir des coefficients publiés pour le
+    <em>Fetal Growth Distributions Calculator</em>. Le BIP et la longueur humérale sont facultatifs.
+    L’EPF est calculée automatiquement par Hadlock à partir du PC, du PA et de la LF ; lorsque le sexe
+    est renseigné, la courbe d’EPF spécifique au sexe est utilisée.
+  </div>
+  <p class="source">
+    Source : WHO/HRP Sexual and Reproductive Health and Research — <em>Fetal Growth Calculator</em>.
+    Coefficients : dépôt <em>whoFetalGrowth</em>, fichiers coefficientsGlobalV3.csv et coefficientsEFWbySexV3.csv.
+  </p>
+
 
 <section id="doppler" class="panel">
   <span class="badge">Références FMF · Ciobanu et al. 2019</span>
@@ -173,7 +245,7 @@
 </section>
 </main>
 
-<footer>GO-CHUB · V9.9</footer>
+<footer>GO-CHUB</footer>
 
 <script>
 // Références OMS intégrées directement dans la page pour éviter tout échec de chargement
@@ -517,32 +589,10 @@ function ntSigma(crl){
   return 0.58203 - 0.0004391*crl;
 }
 function crlGestationalAgeDays(crl){
-  // V9.9 : datation LCC 6–84 mm calée sur les sorties concordantes
-  // Perinatology / table de datation LCC (références Robinson-Fleming).
-  // On interpole entre des points entiers de référence, puis on arrondit
-  // au jour entier le plus proche.
-  const anchors=[
-    [6,45],[7,46],[8,47],[9,48],[10,50],
-    [11,50],[12,52],[13,53],[14,54],[15,55],
-    [16,56],[17,57],[18,58],[19,59],[20,60],
-    [21,61],[22,62],[23,63],[24,64],[25,65],
-    [30,69],[35,73],[40,76],[45,79],[47,81],
-    [54,84],[55,85],[57,86],[60,88],[61,88],[62,88],
-    [63,89],[64,90],[65,90],[70,92],[72,94],[75,95],
-    [76,96],[78,97],[79,97],[80,98],[82,99],[84,100]
-  ];
-
-  if(crl<=anchors[0][0]) return anchors[0][1];
-  if(crl>=anchors[anchors.length-1][0]) return anchors[anchors.length-1][1];
-
-  for(let i=0;i<anchors.length-1;i++){
-    const [x1,y1]=anchors[i], [x2,y2]=anchors[i+1];
-    if(crl>=x1 && crl<=x2){
-      const f=(crl-x1)/(x2-x1);
-      return Math.round(y1 + f*(y2-y1));
-    }
-  }
-  return 0;
+  // V9.1 : formule continue de datation LCC, calibrée sur Perinatology.
+  // AG (jours) = 23,73 + 8,052 × sqrt(LCC × 1,037)
+  // Perinatology correspond à l'arrondi au jour supérieur.
+  return Math.ceil(23.73 + 8.052*Math.sqrt(crl*1.037));
 }
 function calculateNT(){
   const crl=Number(document.getElementById('nt-crl').value);
@@ -661,6 +711,80 @@ function resetTerme(){
   document.getElementById('ddg').value='';
   document.getElementById('terme-result').textContent='Renseignez la date de début de grossesse.';
 }
+
+const SRHR_BPD = [[0.01, 0.591008401542612, 0.251833515513537, -0.00582602136865785, 4.85842528593502e-05, 0], [0.025, 0.58340478243682, 0.257706867351367, -0.00608380366281251, 5.16940376186165e-05, 0], [0.05, 0.640086541374477, 0.25352855332296, -0.00591651627062447, 4.94614232987744e-05, 0], [0.1, 0.67586050811029, 0.25343383445191, -0.00595606903884204, 5.03055604381436e-05, 0], [0.25, 0.769315103415485, 0.249927024175735, -0.00592399444708251, 5.076548429269e-05, 0], [0.5, 0.872984231314326, 0.243385003540798, -0.00571172523683453, 4.82880035733658e-05, 0], [0.75, 0.983298265402666, 0.236071116567572, -0.00548348083012818, 4.58419655773418e-05, 0], [0.9, 1.01351909208103, 0.237088857953509, -0.0055421492813894, 4.65258350076297e-05, 0], [0.95, 1.11401192681678, 0.228258457814188, -0.00524271052970102, 4.31665697359201e-05, 0], [0.975, 1.17917438634649, 0.224245686901115, -0.00513638678692311, 4.21401138788665e-05, 0], [0.99, 1.18876528083144, 0.22624188722951, -0.00522504825833189, 4.31577122241698e-05, 0]];
+const SRHR_HL = [[0.01, -7.78349846701959, 1.38492965874312, -0.0652780187735718, 0.0014150928034733, -1.16119076226422e-05], [0.025, -7.47910160663101, 1.35204523406865, -0.0636532992863844, 0.00137481173675706, -1.12101330502122e-05], [0.05, -6.90099057209008, 1.27054553137824, -0.0591262450111552, 0.0012637456183417, -1.02071740374974e-05], [0.1, -6.53608302749862, 1.2272413635898, -0.0571034895407674, 0.00122207225813435, -9.88852986676249e-06], [0.25, -5.42815715796469, 1.07352977734643, -0.0489087664932973, 0.0010293053840563, -8.20541048892881e-06], [0.5, -4.85748536478029, 1.00813558857801, -0.0460077781702957, 0.000973401688196724, -7.81084345942064e-06], [0.75, -4.3140683823838, 0.943595032408634, -0.042967382499428, 0.000909706728731155, -7.31114518318759e-06], [0.9, -3.70486556990912, 0.86055314135122, -0.0385250212605406, 0.000804666353059272, -6.3896725175013e-06], [0.95, -3.34494754486814, 0.813134285208091, -0.0361206171893883, 0.000751920643315549, -5.96785208299362e-06], [0.975, -3.54703721492887, 0.851835316341919, -0.0385210544307558, 0.000815301857140939, -6.57662126778699e-06], [0.99, -3.41073389554318, 0.845833777301508, -0.0386831969965017, 0.000828259625010723, -6.74931990585841e-06]];
+const SRHR_EFW_SEX = {"F": [[0.01, -1.89823055117316, 0.694217690139681, -0.0249755007746458, 0.000533634489533981, -4.7692763424938e-06], [0.025, -0.915523725804273, 0.529374415518249, -0.0147446585958276, 0.000269201219853759, -2.3537061714461e-06], [0.05, -0.0356552265566936, 0.376064209229977, -0.00496950115937874, 1.00880399508847e-05, 8.87897379966417e-08], [0.1, 0.155170122624531, 0.356594762998776, -0.00401282727802378, -1.14891004630409e-05, 2.91905926442287e-07], [0.25, -0.00617926685323766, 0.391489315579454, -0.00583983363713264, 2.74701265932854e-05, 1.25218741602196e-08], [0.5, 0.247277418113423, 0.370440200280727, -0.00507278668575342, 1.79658724333519e-05, 3.17102018612384e-08], [0.75, 0.376784712355285, 0.361976162764535, -0.00463535949504953, 8.51326693543256e-06, 1.04436638183705e-07], [0.9, 0.286538459425835, 0.387048945293849, -0.00606592437416756, 4.19335923075898e-05, -1.64397771501855e-07], [0.95, 0.381320788764689, 0.376613696575359, -0.00528117982372732, 1.81818929490566e-05, 7.60085577423407e-08], [0.975, 0.32551154984358, 0.40214557617585, -0.0074145176202411, 8.8196644838898e-05, -7.1015932637436e-07], [0.99, 0.5179331809046, 0.38992943582849, -0.0070512841081792, 8.0249588087978e-05, -5.8757835323298e-07]], "M": [[0.01, 1.0676868754174, 0.18916289014035, 0.0057574178248425, -0.00025890835282806, 2.5773765651089e-06], [0.025, -0.52610096513854, 0.44906549056954, -0.0089009550762548, 9.868293523919e-05, -6.1862373692705e-07], [0.05, -0.264562353403465, 0.412210701662848, -0.00659353966698675, 3.87085414793403e-05, -5.92167006528022e-08], [0.1, -0.0631025226657407, 0.390993877846881, -0.00560764189001381, 1.90944627895524e-05, 8.84241803692905e-08], [0.25, -0.136872920737678, 0.411385471212291, -0.00662710457053528, 4.01078967104191e-05, -6.09266544869339e-08], [0.5, 0.222999048464601, 0.372888830200871, -0.00482835487505679, 5.3892793557086e-06, 1.72630247811947e-07], [0.75, 0.274568726691847, 0.381231662554576, -0.00557248890309729, 2.934934995138e-05, -8.27628809790136e-08], [0.9, 0.240213697127957, 0.391178494734445, -0.00579538706713982, 2.75733050639858e-05, -1.90970772277149e-08], [0.95, 0.238080920038937, 0.394765675971459, -0.00581267491399174, 2.31531669571276e-05, 6.85345268671191e-08], [0.975, 0.79018076483077, 0.32585025131141, -0.0025559098706069, -4.2038969571238e-05, 5.4228420412733e-07], [0.99, -0.63894706453018, 0.59827236973175, -0.020501971506261, 0.00045665099050068, -4.4070188173566e-06]]};
+let lastSRHRText = '';
+
+function srhrRows(metric, sex){
+  if(metric==='BPD') return SRHR_BPD.map(x=>({q:x[0],b:x.slice(1)}));
+  if(metric==='HL') return SRHR_HL.map(x=>({q:x[0],b:x.slice(1)}));
+  if(metric==='EFW' && (sex==='F'||sex==='M'))
+    return SRHR_EFW_SEX[sex].map(x=>({q:x[0],b:x.slice(1)}));
+  return (WHO[metric]||[]).map(r=>({q:Number(r.q),b:r.b}));
+}
+function percentileSRHR(metric,ga,value,sex='unknown'){
+  value=Number(value);
+  const rows=srhrRows(metric,sex);
+  if(!rows.length || !Number.isFinite(value)) return {label:'Erreur de calcul',p:null,status:'low'};
+  const pts=rows.map(r=>({q:r.q,value:Math.exp(r.b.reduce((s,c,i)=>s+c*ga**i,0))}))
+                .sort((a,b)=>a.q-b.q);
+  if(value<pts[0].value) return {label:'< P'+(pts[0].q*100).toString().replace('.',','),p:pts[0].q*100,status:'low'};
+  if(value>pts[pts.length-1].value) return {label:'> P'+(pts[pts.length-1].q*100).toString().replace('.',','),p:pts[pts.length-1].q*100,status:'high'};
+  for(let i=0;i<pts.length-1;i++){
+    const a=pts[i],b=pts[i+1];
+    if(value>=a.value && value<=b.value){
+      const f=(value-a.value)/(b.value-a.value);
+      const p=(a.q+f*(b.q-a.q))*100;
+      return {label:'P'+p.toFixed(1).replace('.',','),p,status:p<10?'low':p>90?'high':'normal'};
+    }
+  }
+  return {label:'—',p:null,status:''};
+}
+function calculateSRHR(){
+  const w=Number(document.getElementById('srhr-weeks').value), d=Number(document.getElementById('srhr-days').value);
+  const ga=w+d/7, sex=document.getElementById('srhr-sex').value;
+  if(w<14||w>40||d<0||d>6) return;
+  const vals={
+    HC:Number(document.getElementById('srhr-hc').value),
+    AC:Number(document.getElementById('srhr-ac').value),
+    FL:Number(document.getElementById('srhr-fl').value),
+    BPD:Number(document.getElementById('srhr-bpd').value),
+    HL:Number(document.getElementById('srhr-hl').value)
+  };
+  let h='', parts=[];
+  const labels={HC:'PC',AC:'PA',FL:'LF',BPD:'BIP',HL:'Humérus'};
+  for(const m of ['HC','AC','FL','BPD','HL']) if(vals[m]>0){
+    const r=percentileSRHR(m,ga,vals[m],sex);
+    h+=resultCard(labels[m],formatNum(vals[m]),'mm',r);
+    parts.push(`${labels[m]} ${formatNum(vals[m])} mm (${r.label})`);
+  }
+  if(vals.HC>0&&vals.AC>0&&vals.FL>0){
+    const efw=hadlockHCACFL(vals.HC,vals.AC,vals.FL);
+    document.getElementById('srhr-efw').value=efw.toFixed(1);
+    const r=percentileSRHR('EFW',ga,efw,sex);
+    h+=resultCard('EPF Hadlock',efw.toFixed(1).replace('.',','),'g',r,'efw-highlight');
+    parts.push(`EPF Hadlock ${Math.round(efw)} g (${r.label})`);
+  } else document.getElementById('srhr-efw').value='';
+  const box=document.getElementById('srhr-results');
+  box.innerHTML=h||'<div class="notice">Renseignez au moins une biométrie.</div>';
+  box.classList.remove('hidden');
+  lastSRHRText=parts.join(', ');
+  document.getElementById('copy-srhr-button').classList.toggle('hidden',!lastSRHRText);
+}
+async function copySRHRResults(){
+  if(!lastSRHRText)return;
+  const text='Biométries WHO/SRHR : '+lastSRHRText+'.';
+  try{await navigator.clipboard.writeText(text)}catch(e){}
+}
+function resetSRHR(){
+  for(const id of ['srhr-hc','srhr-ac','srhr-fl','srhr-bpd','srhr-hl','srhr-efw']) document.getElementById(id).value='';
+  document.getElementById('srhr-results').classList.add('hidden');
+  document.getElementById('copy-srhr-button').classList.add('hidden');
+  lastSRHRText='';
+}
+
 </script>
 </body>
 </html>
