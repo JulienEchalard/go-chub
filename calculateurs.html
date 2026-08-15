@@ -80,7 +80,7 @@
 </section>
 
 <section id="srhr" class="panel">
-  <span class="badge">WHO / SRHR · calculateur officiel · TEST V10.3</span>
+  <span class="badge">WHO / SRHR · calculateur officiel · TEST V10.4</span>
   <h2 style="margin-top:10px">EPF et biométries OMS — SRHR</h2>
   <p>Deuxième calculateur conservé en parallèle du calculateur OMS actuel pour comparaison clinique.</p>
 
@@ -192,7 +192,7 @@
 
 
 <section id="psv" class="panel">
-  <span class="badge">Perinatology · Mari et al. · TEST V10.3</span>
+  <span class="badge">Perinatology · Mari et al. · TEST V10.4</span>
   <h2 style="margin-top:10px">PSV de l’artère cérébrale moyenne</h2>
   <p>Calcul de la médiane attendue et du MoM de la vitesse systolique maximale de l’ACM en fonction du terme.</p>
 
@@ -865,8 +865,9 @@ function calculatePSV(){
 
   if(Number.isFinite(observed) && observed > 0){
     const mom = observed / median;
-    const status = mom >= 1.5 ? 'high' : 'normal';
-    const textColor = mom >= 1.5 ? '#b91c1c' : '#15803d';
+    const displayedMom = Number(mom.toFixed(2));
+    const status = displayedMom >= 1.5 ? 'high' : 'normal';
+    const textColor = displayedMom >= 1.5 ? '#b91c1c' : '#15803d';
 
     h += `
       <div class="result-card ${status}">
