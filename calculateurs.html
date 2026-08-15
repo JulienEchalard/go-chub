@@ -80,7 +80,7 @@
 </section>
 
 <section id="srhr" class="panel">
-  <span class="badge">WHO / SRHR · calculateur officiel · TEST V10.1</span>
+  <span class="badge">WHO / SRHR · calculateur officiel · TEST V10.2</span>
   <h2 style="margin-top:10px">EPF et biométries OMS — SRHR</h2>
   <p>Deuxième calculateur conservé en parallèle du calculateur OMS actuel pour comparaison clinique.</p>
 
@@ -188,6 +188,51 @@
   <div class="buttonrow">
     
   </div>
+</section>
+
+
+<section id="psv" class="panel">
+  <span class="badge">Perinatology · Mari et al. · TEST V10.2</span>
+  <h2 style="margin-top:10px">PSV de l’artère cérébrale moyenne</h2>
+  <p>Calcul de la médiane attendue et du MoM de la vitesse systolique maximale de l’ACM en fonction du terme.</p>
+
+  <div class="formgrid">
+    <div class="field">
+      <label>Semaines d’aménorrhée</label>
+      <input id="psv-weeks" type="number" min="16" max="42" value="32" oninput="calculatePSV()">
+    </div>
+    <div class="field">
+      <label>Jours</label>
+      <input id="psv-days" type="number" min="0" max="6" value="0" oninput="calculatePSV()">
+    </div>
+    <div class="field">
+      <label>PSV ACM observée</label>
+      <div class="unit">
+        <input id="psv-value" type="number" min="1" step="0.1" placeholder="ex. 60,3" oninput="calculatePSV()">
+        <span>cm/s</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="buttonrow">
+    <button id="copy-psv-button" class="button secondary hidden" onclick="copyPSVResults()">📋 Copier</button>
+    <button class="button secondary" onclick="resetPSV()">Effacer</button>
+  </div>
+
+  <div id="psv-results" class="results hidden"></div>
+
+  <div class="notice validation">
+    <strong>Méthode :</strong> médiane attendue calculée selon
+    <code>PSV = e^(2,31 + 0,04643 × AG)</code>,
+    avec AG en semaines décimales. Le MoM correspond à PSV observée ÷ médiane attendue.
+    Code couleur : rouge si MoM ≥ 1,5.
+  </div>
+
+  <p class="source">
+    Référence : Mari G, Deter RL, Carpenter RL, et al.
+    <em>Noninvasive diagnosis by Doppler ultrasonography of fetal anemia due to maternal red-cell alloimmunization.</em>
+    N Engl J Med. 2000;342:9–14.
+  </p>
 </section>
 
 <section id="cn" class="panel">
@@ -797,6 +842,62 @@ function resetSRHR(){
   document.getElementById('srhr-results').classList.add('hidden');
   document.getElementById('copy-srhr-button').classList.add('hidden');
   lastSRHRText='';
+}
+
+
+let lastPSVText = '';
+
+function calculatePSV(){
+  const w = Number(document.getElementById('psv-weeks').value);
+  const d = Number(document.getElementById('psv-days').value);
+  const observed = Number(document.getElementById('psv-value').value);
+
+  if(!Number.isFinite(w) || !Number.isFinite(d) || w < 16 || w > 42 || d < 0 || d > 6){
+    return;
+  }
+
+  const ga = w + d/7;
+  const median = Math.exp(2.31 + 0.04643 * ga);
+  const threshold = 1.5 * median;
+
+  const box = document.getElementById('psv-results');
+  let h = `
+    <div class="result-card normal">
+      <span>Médiane attendue · ${w} SA + ${d} j</span>
+      <strong>${median.toFixed(1).replace('.', ',')} cm/s</strong>
+    </div>
+    <div class="result-card normal">
+      <span>Seuil 1,5 MoM</span>
+      <strong>${threshold.toFixed(1).replace('.', ',')} cm/s</strong>
+    </div>`;
+
+  if(Number.isFinite(observed) && observed > 0){
+    const mom = observed / median;
+    const status = mom >= 1.5 ? 'high' : 'normal';
+    h += `
+      <div class="result-card ${status}">
+        <span>PSV ACM observée · ${observed.toFixed(1).replace('.', ',')} cm/s</span>
+        <strong>${mom.toFixed(2).replace('.', ',')} MoM</strong>
+      </div>`;
+    lastPSVText = `PSV ACM ${observed.toFixed(1).replace('.', ',')} cm/s à ${w} SA + ${d} j : médiane ${median.toFixed(1).replace('.', ',')} cm/s, ${mom.toFixed(2).replace('.', ',')} MoM, seuil 1,5 MoM ${threshold.toFixed(1).replace('.', ',')} cm/s.`;
+  } else {
+    lastPSVText = `À ${w} SA + ${d} j : médiane PSV ACM ${median.toFixed(1).replace('.', ',')} cm/s, seuil 1,5 MoM ${threshold.toFixed(1).replace('.', ',')} cm/s.`;
+  }
+
+  box.innerHTML = h;
+  box.classList.remove('hidden');
+  document.getElementById('copy-psv-button').classList.remove('hidden');
+}
+
+async function copyPSVResults(){
+  if(!lastPSVText) return;
+  try { await navigator.clipboard.writeText(lastPSVText); } catch(e) {}
+}
+
+function resetPSV(){
+  document.getElementById('psv-value').value = '';
+  lastPSVText = '';
+  calculatePSV();
 }
 
 </script>
