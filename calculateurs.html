@@ -80,7 +80,7 @@
 </section>
 
 <section id="srhr" class="panel">
-  <span class="badge">WHO / SRHR · calculateur officiel · TEST V10.2</span>
+  <span class="badge">WHO / SRHR · calculateur officiel · TEST V10.3</span>
   <h2 style="margin-top:10px">EPF et biométries OMS — SRHR</h2>
   <p>Deuxième calculateur conservé en parallèle du calculateur OMS actuel pour comparaison clinique.</p>
 
@@ -192,7 +192,7 @@
 
 
 <section id="psv" class="panel">
-  <span class="badge">Perinatology · Mari et al. · TEST V10.2</span>
+  <span class="badge">Perinatology · Mari et al. · TEST V10.3</span>
   <h2 style="margin-top:10px">PSV de l’artère cérébrale moyenne</h2>
   <p>Calcul de la médiane attendue et du MoM de la vitesse systolique maximale de l’ACM en fonction du terme.</p>
 
@@ -859,9 +859,27 @@ function calculatePSV(){
   const ga = w + d/7;
   const median = Math.exp(2.31 + 0.04643 * ga);
   const threshold = 1.5 * median;
-
   const box = document.getElementById('psv-results');
-  let h = `
+
+  let h = '';
+
+  if(Number.isFinite(observed) && observed > 0){
+    const mom = observed / median;
+    const status = mom >= 1.5 ? 'high' : 'normal';
+    const textColor = mom >= 1.5 ? '#b91c1c' : '#15803d';
+
+    h += `
+      <div class="result-card ${status}">
+        <span>PSV ACM observée · ${observed.toFixed(1).replace('.', ',')} cm/s</span>
+        <strong style="color:${textColor}">${mom.toFixed(2).replace('.', ',')} MoM</strong>
+      </div>`;
+
+    lastPSVText = `PSV ACM ${observed.toFixed(1).replace('.', ',')} cm/s à ${w} SA + ${d} j : ${mom.toFixed(2).replace('.', ',')} MoM, médiane ${median.toFixed(1).replace('.', ',')} cm/s, seuil 1,5 MoM ${threshold.toFixed(1).replace('.', ',')} cm/s.`;
+  } else {
+    lastPSVText = `À ${w} SA + ${d} j : médiane PSV ACM ${median.toFixed(1).replace('.', ',')} cm/s, seuil 1,5 MoM ${threshold.toFixed(1).replace('.', ',')} cm/s.`;
+  }
+
+  h += `
     <div class="result-card normal">
       <span>Médiane attendue · ${w} SA + ${d} j</span>
       <strong>${median.toFixed(1).replace('.', ',')} cm/s</strong>
@@ -871,24 +889,10 @@ function calculatePSV(){
       <strong>${threshold.toFixed(1).replace('.', ',')} cm/s</strong>
     </div>`;
 
-  if(Number.isFinite(observed) && observed > 0){
-    const mom = observed / median;
-    const status = mom >= 1.5 ? 'high' : 'normal';
-    h += `
-      <div class="result-card ${status}">
-        <span>PSV ACM observée · ${observed.toFixed(1).replace('.', ',')} cm/s</span>
-        <strong>${mom.toFixed(2).replace('.', ',')} MoM</strong>
-      </div>`;
-    lastPSVText = `PSV ACM ${observed.toFixed(1).replace('.', ',')} cm/s à ${w} SA + ${d} j : médiane ${median.toFixed(1).replace('.', ',')} cm/s, ${mom.toFixed(2).replace('.', ',')} MoM, seuil 1,5 MoM ${threshold.toFixed(1).replace('.', ',')} cm/s.`;
-  } else {
-    lastPSVText = `À ${w} SA + ${d} j : médiane PSV ACM ${median.toFixed(1).replace('.', ',')} cm/s, seuil 1,5 MoM ${threshold.toFixed(1).replace('.', ',')} cm/s.`;
-  }
-
   box.innerHTML = h;
   box.classList.remove('hidden');
   document.getElementById('copy-psv-button').classList.remove('hidden');
 }
-
 async function copyPSVResults(){
   if(!lastPSVText) return;
   try { await navigator.clipboard.writeText(lastPSVText); } catch(e) {}
