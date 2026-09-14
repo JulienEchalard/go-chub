@@ -3,7 +3,7 @@
     {
       title: "Reaching caesarean section rates below 15%: experience of a French tertiary maternity using the Robson classification system",
       subtitle: "Obstétrique · Echalard et al. · Reproductive Health 2025 · PDF",
-      href: "protocoles/obstétrique/Publication.pdf",
+      href: "protocoles/obstetrique/Publication.pdf",,
       keywords: "cesarean caesarean césarienne cesarienne robson classification accouchement voie basse taux césarienne echalard publication thèse these obstétrique"
     },
     {
