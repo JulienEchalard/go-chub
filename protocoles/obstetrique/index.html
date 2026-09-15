@@ -28,25 +28,51 @@
   <section class="panel">
     <h2>Protocoles disponibles</h2>
 
-    <div class="pdf-list">
-
-      <a class="pdf-item"
-         href="Publication.pdf"
-         target="_blank"
-         data-search="publication obstétrique gynécologie thèse">
-        <div>
-          <strong>Publication</strong>
-          <small>Document PDF · Obstétrique</small>
-        </div>
-        <span>Ouvrir le PDF →</span>
-      </a>
-
+    <div class="pdf-list" id="pdf-list">
+      <div class="notice">Chargement des protocoles…</div>
     </div>
+
   </section>
 
 </main>
 
 <footer>GO-CHUB · V10.4</footer>
+
+<script>
+fetch("../../assets/protocoles.json")
+  .then(response => response.json())
+  .then(documents => {
+
+    const liste = document.getElementById("pdf-list");
+
+    const protocoles = documents.filter(
+      document => document.category === "Obstétrique"
+    );
+
+    if (protocoles.length === 0) {
+      liste.innerHTML =
+        '<div class="notice">Aucun protocole disponible pour le moment.</div>';
+      return;
+    }
+
+    liste.innerHTML = protocoles.map(document => `
+      <a class="pdf-item"
+         href="../../${document.href}"
+         target="_blank">
+        <div>
+          <strong>${document.title}</strong>
+          <small>Document PDF · Obstétrique</small>
+        </div>
+        <span>Ouvrir le PDF →</span>
+      </a>
+    `).join("");
+
+  })
+  .catch(() => {
+    document.getElementById("pdf-list").innerHTML =
+      '<div class="notice">Aucun protocole disponible pour le moment.</div>';
+  });
+</script>
 
 </body>
 </html>
