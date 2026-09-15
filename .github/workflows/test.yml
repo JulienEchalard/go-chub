@@ -1,0 +1,11 @@
+name: Test GO-CHUB
+
+on:
+  workflow_dispatch:
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Test
+        run: echo "GO-CHUB fonctionne"
