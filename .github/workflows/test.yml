@@ -1,11 +1,64 @@
-name: Test GO-CHUB
+name: Mise à jour automatique des protocoles
 
 on:
   workflow_dispatch:
+  push:
+    branches:
+      - main
+    paths:
+      - "protocoles/**"
+
+permissions:
+  contents: write
 
 jobs:
-  test:
+  update:
     runs-on: ubuntu-latest
+
     steps:
-      - name: Test
-        run: echo "GO-CHUB fonctionne"
+      - name: Recuperer le site
+        uses: actions/checkout@v4
+
+      - name: Generer la liste des protocoles
+        run: |
+          python3 - <<'PY'
+          import os
+          import json
+
+          dossiers = {
+              "obstetrique": "Obstétrique",
+              "gynecologie": "Gynécologie"
+          }
+
+          documents = []
+
+          for dossier, categorie in dossiers.items():
+              chemin = os.path.join("protocoles", dossier)
+
+              if not os.path.isdir(chemin):
+                  continue
+
+              for fichier in sorted(os.listdir(chemin)):
+                  if fichier.lower().endswith(".pdf"):
+                      titre = os.path.splitext(fichier)[0]
+                      titre = titre.replace("-", " ").replace("_", " ")
+
+                      documents.append({
+                          "title": titre,
+                          "category": categorie,
+                          "href": f"protocoles/{dossier}/{fichier}"
+                      })
+
+          os.makedirs("assets", exist_ok=True)
+
+          with open("assets/protocoles.json", "w", encoding="utf-8") as f:
+              json.dump(documents, f, ensure_ascii=False, indent=2)
+          PY
+
+      - name: Enregistrer la liste
+        run: |
+          git config user.name "GO-CHUB Bot"
+          git config user.email "actions@github.com"
+          git add assets/protocoles.json
+          git diff --cached --quiet || git commit -m "Mise à jour automatique des protocoles"
+          git push
