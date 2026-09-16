@@ -23,5 +23,35 @@
     "title": "RCIU ET PAG",
     "category": "Obstétrique",
     "href": "protocoles/obstetrique/RCIU ET PAG.pdf"
+  },
+  {
+    "title": "BARTHOLINITE",
+    "category": "Gynécologie",
+    "href": "protocoles/gynecologie/BARTHOLINITE.pdf"
+  },
+  {
+    "title": "GROSSESSE ARRÊTÉE PRÉCOCE",
+    "category": "Gynécologie",
+    "href": "protocoles/gynecologie/GROSSESSE ARRÊTÉE PRÉCOCE.pdf"
+  },
+  {
+    "title": "GROSSESSE ECTOPIQUE (GEU)",
+    "category": "Gynécologie",
+    "href": "protocoles/gynecologie/GROSSESSE ECTOPIQUE (GEU).pdf"
+  },
+  {
+    "title": "INTERRUPTION VOLONTAIRE DE GROSSESSE (IVG)",
+    "category": "Gynécologie",
+    "href": "protocoles/gynecologie/INTERRUPTION VOLONTAIRE DE GROSSESSE (IVG).pdf"
+  },
+  {
+    "title": "SYNDROME D’HYPERSTIMULATION OVARIENNE",
+    "category": "Gynécologie",
+    "href": "protocoles/gynecologie/SYNDROME D’HYPERSTIMULATION OVARIENNE.pdf"
+  },
+  {
+    "title": "VOMISSEMENTS GRAVIDIQUES ET HYPEREMESE GRAVIDIQUE",
+    "category": "Gynécologie",
+    "href": "protocoles/gynecologie/VOMISSEMENTS GRAVIDIQUES ET HYPEREMESE GRAVIDIQUE.pdf"
   }
 ]
