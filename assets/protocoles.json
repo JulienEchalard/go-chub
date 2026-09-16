@@ -1,1 +1,27 @@
-[]
+[
+  {
+    "title": "CHOLESTASE INTRA HEPATIQUE GRAVIDIQUE",
+    "category": "Obstétrique",
+    "href": "protocoles/obstetrique/CHOLESTASE INTRA-HEPATIQUE GRAVIDIQUE.pdf"
+  },
+  {
+    "title": "DECLENCHEMENT ARTIFICIEL DU TRAVAIL",
+    "category": "Obstétrique",
+    "href": "protocoles/obstetrique/DECLENCHEMENT ARTIFICIEL DU TRAVAIL.pdf"
+  },
+  {
+    "title": "LESIONS OBSTETRICALES DU SPHINCTER DE L'ANUS (LOSA)",
+    "category": "Obstétrique",
+    "href": "protocoles/obstetrique/LESIONS OBSTETRICALES DU SPHINCTER DE L'ANUS (LOSA).pdf"
+  },
+  {
+    "title": "PREECLAMPSIE",
+    "category": "Obstétrique",
+    "href": "protocoles/obstetrique/PREECLAMPSIE.pdf"
+  },
+  {
+    "title": "RCIU ET PAG",
+    "category": "Obstétrique",
+    "href": "protocoles/obstetrique/RCIU ET PAG.pdf"
+  }
+]
