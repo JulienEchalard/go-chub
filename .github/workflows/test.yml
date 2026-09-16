@@ -27,7 +27,8 @@ jobs:
 
           dossiers = {
               "obstetrique": "Obstétrique",
-              "gynecologie": "Gynécologie"
+              "gynecologie": "Gynécologie",
+              "pnds": "PNDS",
           }
 
           documents = []
