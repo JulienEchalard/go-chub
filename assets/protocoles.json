@@ -53,5 +53,85 @@
     "title": "VOMISSEMENTS GRAVIDIQUES ET HYPEREMESE GRAVIDIQUE",
     "category": "Gynécologie",
     "href": "protocoles/gynecologie/VOMISSEMENTS GRAVIDIQUES ET HYPEREMESE GRAVIDIQUE.pdf"
+  },
+  {
+    "title": "CARDIOPATHIE CONGENITALE COMPLEXE",
+    "category": "PNDS",
+    "href": "protocoles/PNDS/CARDIOPATHIE CONGENITALE COMPLEXE.pdf"
+  },
+  {
+    "title": "DREPANOCYTOSE",
+    "category": "PNDS",
+    "href": "protocoles/PNDS/DREPANOCYTOSE.pdf"
+  },
+  {
+    "title": "EHLERS DANLOS NON VASCULAIRE",
+    "category": "PNDS",
+    "href": "protocoles/PNDS/EHLERS-DANLOS NON VASCULAIRE.pdf"
+  },
+  {
+    "title": "HYPERTENSION ARTERIELLE PULMONAIRE (HTAP)",
+    "category": "PNDS",
+    "href": "protocoles/PNDS/HYPERTENSION ARTERIELLE PULMONAIRE (HTAP).pdf"
+  },
+  {
+    "title": "LUPUS SYSTEMIQUE",
+    "category": "PNDS",
+    "href": "protocoles/PNDS/LUPUS SYSTEMIQUE.pdf"
+  },
+  {
+    "title": "MALADIE DE WILLEBRAND",
+    "category": "PNDS",
+    "href": "protocoles/PNDS/MALADIE DE WILLEBRAND.pdf"
+  },
+  {
+    "title": "MARFAN",
+    "category": "PNDS",
+    "href": "protocoles/PNDS/MARFAN.pdf"
+  },
+  {
+    "title": "MYASTHENIE",
+    "category": "PNDS",
+    "href": "protocoles/PNDS/MYASTHENIE.pdf"
+  },
+  {
+    "title": "NEUROMYELITE OPTIQUE",
+    "category": "PNDS",
+    "href": "protocoles/PNDS/NEUROMYELITE OPTIQUE.pdf"
+  },
+  {
+    "title": "PHENYLCETONURIE",
+    "category": "PNDS",
+    "href": "protocoles/PNDS/PHENYLCETONURIE.pdf"
+  },
+  {
+    "title": "PURPURA THROMBOPENIQUE TROMBOCYTOPENIQUE (PTT)",
+    "category": "PNDS",
+    "href": "protocoles/PNDS/PURPURA THROMBOPENIQUE TROMBOCYTOPENIQUE (PTT).pdf"
+  },
+  {
+    "title": "RETARD DE COISSANCE INTRA UTERIN SELECTIF ET GROSSESSE MONOCHORIALE",
+    "category": "PNDS",
+    "href": "protocoles/PNDS/RETARD DE COISSANCE INTRA-UTERIN SELECTIF ET GROSSESSE MONOCHORIALE.pdf"
+  },
+  {
+    "title": "SAPL",
+    "category": "PNDS",
+    "href": "protocoles/PNDS/SAPL.pdf"
+  },
+  {
+    "title": "SCLERODERMIE SYSTEMIQUE",
+    "category": "PNDS",
+    "href": "protocoles/PNDS/SCLERODERMIE SYSTEMIQUE.pdf"
+  },
+  {
+    "title": "SYNDROME DE TURNER",
+    "category": "PNDS",
+    "href": "protocoles/PNDS/SYNDROME DE TURNER.pdf"
+  },
+  {
+    "title": "SYNDROME TRANSFUSEUR TRANSFUSE (STT)",
+    "category": "PNDS",
+    "href": "protocoles/PNDS/SYNDROME TRANSFUSEUR TRANSFUSE (STT).pdf"
   }
 ]
