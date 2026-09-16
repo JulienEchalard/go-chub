@@ -1,1 +1,78 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<link rel="stylesheet" href="../../assets/style.css">
+<title>PNDS · GO-CHUB</title>
+</head>
 
+<body>
+
+<header class="topbar">
+<div class="topbar-inner">
+<a class="brand" href="../../index.html">
+<div class="brandmark">GO</div>
+<div>
+<h1>PNDS</h1>
+<small>Protocoles Nationaux de Diagnostic et de Soins</small>
+</div>
+</a>
+</div>
+</header>
+
+<main>
+
+<a class="back" href="../../index.html">← Retour à l’accueil</a>
+
+<section class="panel">
+<h2>PNDS disponibles</h2>
+
+<div class="pdf-list" id="pdf-list">
+<div class="notice">Chargement des PNDS…</div>
+</div>
+
+</section>
+
+</main>
+
+<footer>GO-CHUB · V10.4</footer>
+
+<script>
+fetch("../../assets/protocoles.json")
+.then(response => response.json())
+.then(documents => {
+
+const liste = document.getElementById("pdf-list");
+
+const protocoles = documents.filter(
+document => document.category === "PNDS"
+);
+
+if (protocoles.length === 0) {
+liste.innerHTML =
+'<div class="notice">Aucun PNDS disponible pour le moment.</div>';
+return;
+}
+
+liste.innerHTML = protocoles.map(document => `
+<a class="pdf-item"
+href="../../${document.href}"
+target="_blank">
+<div>
+<strong>${document.title}</strong>
+<small>Document PDF · PNDS</small>
+</div>
+<span>Ouvrir le PDF →</span>
+</a>
+`).join("");
+
+})
+.catch(() => {
+document.getElementById("pdf-list").innerHTML =
+'<div class="notice">Aucun PNDS disponible pour le moment.</div>';
+});
+</script>
+
+</body>
+</html>
