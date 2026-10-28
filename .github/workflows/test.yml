@@ -29,6 +29,7 @@ jobs:
               "obstetrique": "Obstétrique",
               "gynecologie": "Gynécologie",
               "PNDS": "PNDS",
+              "articles": "Articles scientifiques"
           }
 
           documents = []
