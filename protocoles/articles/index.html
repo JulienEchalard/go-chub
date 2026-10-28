@@ -1,0 +1,72 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<link rel="stylesheet" href="../../assets/style.css">
+<title>Articles scientifiques · GO-CHUB</title>
+</head>
+<body>
+
+<header class="topbar">
+<div class="topbar-inner">
+<a class="brand" href="../../index.html">
+<div class="brandmark">GO</div>
+<div>
+<h1>Articles scientifiques</h1>
+<small>GO-CHUB</small>
+</div>
+</a>
+</div>
+</header>
+
+<main>
+<a class="back" href="../../index.html">← Retour à l’accueil</a>
+
+<section class="panel">
+<h2>Articles disponibles</h2>
+<div class="pdf-list" id="pdf-list">
+<div class="notice">Chargement des articles…</div>
+</div>
+</section>
+</main>
+
+<footer>GO-CHUB</footer>
+
+<script>
+fetch("../../assets/protocoles.json")
+.then(response => response.json())
+.then(documents => {
+const liste = document.getElementById("pdf-list");
+
+const articles = documents.filter(
+document => document.category === "Articles scientifiques"
+);
+
+if (articles.length === 0) {
+liste.innerHTML =
+'<div class="notice">Aucun article disponible pour le moment.</div>';
+return;
+}
+
+liste.innerHTML = articles.map(document => `
+<a class="pdf-item"
+href="../../${document.href}"
+target="_blank"
+rel="noopener">
+<div>
+<strong>${document.title}</strong>
+<small>Article scientifique · PDF</small>
+</div>
+<span>Ouvrir le PDF →</span>
+</a>
+`).join("");
+})
+.catch(() => {
+document.getElementById("pdf-list").innerHTML =
+'<div class="notice">Impossible de charger les articles.</div>';
+});
+</script>
+
+</body>
+</html>
