@@ -60,6 +60,16 @@
     "href": "protocoles/gynecologie/VOMISSEMENTS GRAVIDIQUES ET HYPEREMESE GRAVIDIQUE.pdf"
   },
   {
+    "title": "ANGIOEDÈME HÉRÉDITAIRE",
+    "category": "PNDS",
+    "href": "protocoles/PNDS/ANGIOEDÈME HÉRÉDITAIRE.pdf"
+  },
+  {
+    "title": "APLASIES UTERO VAGINALES SYNDROME DE MAYER ROKITANSKY KUSTER HAUSER",
+    "category": "PNDS",
+    "href": "protocoles/PNDS/APLASIES UTERO-VAGINALES SYNDROME DE MAYER-ROKITANSKY-KUSTER-HAUSER.pdf"
+  },
+  {
     "title": "CARDIOPATHIE CONGENITALE COMPLEXE",
     "category": "PNDS",
     "href": "protocoles/PNDS/CARDIOPATHIE CONGENITALE COMPLEXE.pdf"
@@ -75,9 +85,24 @@
     "href": "protocoles/PNDS/EHLERS-DANLOS NON VASCULAIRE.pdf"
   },
   {
+    "title": "HYPERPLASIE CONGENITALE DES SURRENALES PAR DEFICIT EN 21HYDROXYLASE",
+    "category": "PNDS",
+    "href": "protocoles/PNDS/HYPERPLASIE CONGENITALE DES SURRENALES PAR DEFICIT EN 21HYDROXYLASE.pdf"
+  },
+  {
     "title": "HYPERTENSION ARTERIELLE PULMONAIRE (HTAP)",
     "category": "PNDS",
     "href": "protocoles/PNDS/HYPERTENSION ARTERIELLE PULMONAIRE (HTAP).pdf"
+  },
+  {
+    "title": "INSENSIBILITES AUX ANDROGENES",
+    "category": "PNDS",
+    "href": "protocoles/PNDS/INSENSIBILITES AUX ANDROGENES.pdf"
+  },
+  {
+    "title": "INSUFFISANCE OVARIENNE PREMATUREE:PRIMITIVE",
+    "category": "PNDS",
+    "href": "protocoles/PNDS/INSUFFISANCE OVARIENNE PREMATUREE:PRIMITIVE.pdf"
   },
   {
     "title": "LUPUS SYSTEMIQUE",
