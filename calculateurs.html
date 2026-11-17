@@ -234,6 +234,42 @@
   <div id="terme-result" class="notice">Renseignez la date de début de grossesse.</div>
   <p class="source">La DDG correspond à la date estimée de conception : elle équivaut à 2 SA. Le terme de 41 SA correspond donc à DDG + 273 jours.</p>
 </section>
+  <section id="kleihauer" class="panel">
+  <h2>Hémorragie fœto-maternelle — Kleihauer</h2>
+  <p>Estimation du volume sanguin fœtal perdu et comparaison de deux Kleihauer.</p>
+
+  <div class="formgrid">
+    <div class="field">
+      <label>Kleihauer initial (hématies fœtales / 10 000)</label>
+      <input id="kh1" type="number" min="0" step="1" oninput="calculateKleihauer()">
+    </div>
+    <div class="field">
+      <label>Poids fœtal estimé</label>
+      <div class="unit">
+        <input id="kh-weight" type="number" min="1" step="1" oninput="calculateKleihauer()">
+        <span>g</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="field" style="margin-top:14px">
+    <label>Deuxième Kleihauer (facultatif)</label>
+    <input id="kh2" type="number" min="0" step="1" oninput="calculateKleihauer()">
+  </div>
+
+  <div class="buttonrow">
+    <button class="button secondary" onclick="resetKleihauer()">Effacer</button>
+  </div>
+
+  <div id="kh-results" class="results hidden"></div>
+
+  <p class="source">
+    Estimation conventionnelle : volume (mL) = Kleihauer / 2.
+    Rapport au poids fœtal estimé en kg.
+    Comparaison : variation relative entre deux résultats.
+    À interpréter selon la méthode et les unités du laboratoire.
+  </p>
+</section>
 </main>
 
 <footer>GO-CHUB</footer>
@@ -850,7 +886,95 @@ function resetPSV(){
   lastPSVText = '';
   calculatePSV();
 }
+function calculateKleihauer() {
+  const kh1Input = document.getElementById('kh1').value;
+  const kh2Input = document.getElementById('kh2').value;
+  const weightInput = document.getElementById('kh-weight').value;
+  const box = document.getElementById('kh-results');
 
+  const kh1 = Number(kh1Input);
+  const kh2 = Number(kh2Input);
+  const weight = Number(weightInput);
+
+  if (kh1Input === '' || weightInput === '' ||
+      !Number.isFinite(kh1) || !Number.isFinite(weight) ||
+      kh1 < 0 || weight <= 0) {
+    box.innerHTML = '';
+    box.classList.add('hidden');
+    return;
+  }
+
+  const volume = kh1 / 2;
+  const volumeKg = volume / (weight / 1000);
+
+  function colorClass(value) {
+    if (value < 10) return 'normal';
+    if (value < 20) return 'high';
+    return 'low';
+  }
+
+  function colorStyle(value) {
+    if (value < 10) return '#15803d';
+    if (value < 20) return '#c2410c';
+    return '#b91c1c';
+  }
+
+  let html = `
+    <div class="result ${colorClass(volumeKg)}">
+      <small>Volume sanguin fœtal estimé · ${volume.toFixed(1).replace('.', ',')} mL</small>
+      <strong style="color:${colorStyle(volumeKg)}">
+        ${volumeKg.toFixed(1).replace('.', ',')} mL/kg
+      </strong>
+    </div>
+  `;
+
+  if (kh2Input !== '' && Number.isFinite(kh2) && kh2 >= 0) {
+    const volume2 = kh2 / 2;
+    const volumeKg2 = volume2 / (weight / 1000);
+
+    html += `
+      <div class="result ${colorClass(volumeKg2)}">
+        <small>Deuxième Kleihauer · ${volume2.toFixed(1).replace('.', ',')} mL</small>
+        <strong style="color:${colorStyle(volumeKg2)}">
+          ${volumeKg2.toFixed(1).replace('.', ',')} mL/kg
+        </strong>
+      </div>
+    `;
+
+    if (kh1 > 0) {
+      const variation = ((kh2 - kh1) / kh1) * 100;
+      const red = variation >= 30;
+
+      html += `
+        <div class="result">
+          <small>Variation entre les deux Kleihauer</small>
+          <strong style="color:${red ? '#b91c1c' : '#15803d'}">
+            ${variation > 0 ? '+' : ''}${variation.toFixed(1).replace('.', ',')} %
+          </strong>
+        </div>
+      `;
+    } else {
+      html += `
+        <div class="notice">
+          Variation relative non calculable : Kleihauer initial nul.
+        </div>
+      `;
+    }
+  }
+
+  box.innerHTML = html;
+  box.classList.remove('hidden');
+}
+
+function resetKleihauer() {
+  ['kh1', 'kh2', 'kh-weight'].forEach(id => {
+    document.getElementById(id).value = '';
+  });
+
+  const box = document.getElementById('kh-results');
+  box.innerHTML = '';
+  box.classList.add('hidden');
+}
 </script>
 </body>
 </html>
