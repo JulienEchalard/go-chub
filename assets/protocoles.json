@@ -85,9 +85,19 @@
     "href": "protocoles/PNDS/DREPANOCYTOSE.pdf"
   },
   {
+    "title": "DYSTROPHIE MYOTONIQUE DE TYPE 1   MALADIE DE STEINERT",
+    "category": "PNDS",
+    "href": "protocoles/PNDS/DYSTROPHIE MYOTONIQUE DE TYPE 1 - MALADIE DE STEINERT.pdf"
+  },
+  {
     "title": "EHLERS DANLOS NON VASCULAIRE",
     "category": "PNDS",
     "href": "protocoles/PNDS/EHLERS-DANLOS NON VASCULAIRE.pdf"
+  },
+  {
+    "title": "HEMOPHILIE",
+    "category": "PNDS",
+    "href": "protocoles/PNDS/HEMOPHILIE.pdf"
   },
   {
     "title": "HYPERPLASIE CONGENITALE DES SURRENALES PAR DEFICIT EN 21HYDROXYLASE",
@@ -150,6 +160,16 @@
     "href": "protocoles/PNDS/PHENYLCETONURIE.pdf"
   },
   {
+    "title": "PHEOCHROMOCYTOMES ET PARAGANGLIOMES",
+    "category": "PNDS",
+    "href": "protocoles/PNDS/PHEOCHROMOCYTOMES ET PARAGANGLIOMES.pdf"
+  },
+  {
+    "title": "POLYKYSTOSE RENALE AUTOSOMIQUE RECESSIVE",
+    "category": "PNDS",
+    "href": "protocoles/PNDS/POLYKYSTOSE RENALE AUTOSOMIQUE RECESSIVE.pdf"
+  },
+  {
     "title": "PURPURA THROMBOPENIQUE TROMBOCYTOPENIQUE (PTT)",
     "category": "PNDS",
     "href": "protocoles/PNDS/PURPURA THROMBOPENIQUE TROMBOCYTOPENIQUE (PTT).pdf"
@@ -170,14 +190,29 @@
     "href": "protocoles/PNDS/SCLERODERMIE SYSTEMIQUE.pdf"
   },
   {
+    "title": "SCLEROSE TUBEREUSE DE BOURNEVILLE",
+    "category": "PNDS",
+    "href": "protocoles/PNDS/SCLEROSE TUBEREUSE DE BOURNEVILLE.pdf"
+  },
+  {
     "title": "SYNDROME DE TURNER",
     "category": "PNDS",
     "href": "protocoles/PNDS/SYNDROME DE TURNER.pdf"
   },
   {
+    "title": "SYNDROME D’ALPORT",
+    "category": "PNDS",
+    "href": "protocoles/PNDS/SYNDROME D’ALPORT.pdf"
+  },
+  {
     "title": "SYNDROME TRANSFUSEUR TRANSFUSE (STT)",
     "category": "PNDS",
     "href": "protocoles/PNDS/SYNDROME TRANSFUSEUR TRANSFUSE (STT).pdf"
+  },
+  {
+    "title": "SYNDROMES THALASSEMIQUES MAJEURS ET INTERMEDIAIRES",
+    "category": "PNDS",
+    "href": "protocoles/PNDS/SYNDROMES THALASSEMIQUES MAJEURS ET INTERMEDIAIRES.pdf"
   },
   {
     "title": "Monoxyde de carbone (CO) et grossesse",
